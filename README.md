@@ -21,6 +21,7 @@ RayBeats comes packed with a comprehensive set of features that give you full co
 ### 1. **Playback Controls**
 - **Play / Pause Button**: Toggle playback of the currently loaded track.
 - **Seek Buttons (-10s / +10s)**: Jump backward or forward in the track by 10 seconds for precise control over playback.
+- **Stop Button**: Stop music completely.
 - **Now Playing Label**: Displays the current song name in real time.
 - **Duration Label**: Shows the current position and total duration of the playing track in `MM:SS / MM:SS` format.
 
