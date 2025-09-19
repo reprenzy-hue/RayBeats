@@ -65,13 +65,26 @@ RayBeats comes packed with a comprehensive set of features that give you full co
 1. Ensure your executor can read local files.
 2. Locate or create the `RayBeats` folder in your executor workspace.
 3. Create subfolders for playlists, e.g., `Pop`, `Rock`, `Lofi`.
-4. Add your `.mp3` files to these subfolders.
+4. Add your `.mp3`, `.wav`, or `.ogg` files to these subfolders.
 5. Re-execute the RayBeats script to load songs into the GUI.
 6. Interact with the GUI to play music, adjust volume, apply effects, or manage playlists.
 
 Example directory structure:
 
-RayBeats/ ├─ Pop/ │  ├─ song1.mp3 │  └─ song2.mp3 ├─ Rock/ │  └─ track1.mp3 └─ Lofi/ └─ chillbeat.mp3
+```
+RayBeats/
+├─ readme.txt                # Basic usage instructions (auto-created by script)
+├─ Playlist1/                # Playlist Example
+│  ├─ song1.mp3
+│  ├─ song2.mp3
+│  └─ song3.mp3
+├─ Playlist2/
+│  ├─ track1.mp3
+│  └─ track2.mp3
+├─ Playlist3/
+│  └─ chillbeat.mp3
+└─ ...
+```
 
 ---
 
