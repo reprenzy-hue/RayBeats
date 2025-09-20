@@ -59,7 +59,7 @@ RayBeats comes packed with a comprehensive set of features that give you full co
 - **Playlist Folder Detection**: Automatically detects folders inside the `RayBeats` directory to generate tabs.
 - **MP3 File Detection**: Only `.mp3` files are recognized and listed as playable tracks.
 - **Custom Asset Support**: Uses `getcustomasset()` to load local files into Roblox Sound objects.
-- **Song Name Parsing**: Removes `.mp3` extensions for display in GUI and notifications.
+- **Song Name Parsing**: Removes `.mp3`, `.wav`, or `.ogg` extensions for display in GUI and notifications.
 
 ---
 
