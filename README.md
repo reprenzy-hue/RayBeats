@@ -1,6 +1,6 @@
 # RayBeats - Local Music Player
 
-![RayBeats Preview](https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/raybeats_preview.png)
+![RayBeats Preview](https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/raybeats-preview.png)
 
 RayBeats is a lightweight, fully-featured **local music player for Roblox**, designed to enhance your in-game audio experience. With a clean and modern UI inspired by Sirius' Rayfield library, it allows you to manage, play, and manipulate your music files directly from a customized GUI interface. 
 
