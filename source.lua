@@ -26,7 +26,7 @@ local running = true
 local runLabel = true
 local currentSpeed = 1
 local activePlaylist = "None"
-local shufflePlaylist
+local shufflePlaylist, loopTrack, loopPlaylist
 local isPlaylistLooped = false
 local playlists = {}
 local playlistIndex = {}
@@ -414,7 +414,7 @@ ControlsTab:CreateButton({
 	end
 })
 
-local loopPlaylist = ControlsTab:CreateToggle({
+loopPlaylist = ControlsTab:CreateToggle({
 	Name = "Loop Playlist",
 	CurrentValue = false,
 	Callback = function(value)
@@ -443,7 +443,7 @@ local loopPlaylist = ControlsTab:CreateToggle({
 	end,
 })
 
-local loopTrack = ControlsTab:CreateToggle({
+loopTrack = ControlsTab:CreateToggle({
 	Name = "Loop Track",
 	CurrentValue = false,
 	Callback = function(value)
