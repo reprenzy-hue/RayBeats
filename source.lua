@@ -516,8 +516,8 @@ ControlsTab:CreateToggle({
 					bassBoost = Instance.new("EqualizerSoundEffect")
 					bassBoost.Name = "RayBeats Bass Boost"
 					bassBoost.Parent = currentSound
-					bassBoost.LowGain = 6
-					bassBoost.MidGain = 0
+					bassBoost.LowGain = 8
+					bassBoost.MidGain = 3
 					bassBoost.HighGain = 0
 				end
 			else
