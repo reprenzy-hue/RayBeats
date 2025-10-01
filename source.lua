@@ -341,6 +341,7 @@ playPause = ControlsTab:CreateToggle({
 			startErrorSound()
 			task.wait(0.5)
 			playPause:Set(false)
+			return
 		end
 	end,
 })
