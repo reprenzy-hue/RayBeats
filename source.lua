@@ -471,6 +471,7 @@ ControlsTab:CreateButton({
 			activePlaylist = "None"
 			playedTracks = {}
 			playPause:Set(false)
+			currentSound:Destroy()
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
