@@ -17,6 +17,7 @@ end
 
 local SoundService = game:GetService("SoundService")
 local currentSound = nil
+local internalChange = false
 local currentSoundVolume = 1
 local currentTrackName = "Nothing"
 local isLooped = false
@@ -325,6 +326,11 @@ playPause = ControlsTab:CreateToggle({
 	Name = "Pause <font transparency='0.6'>/</font> Resume",
 	CurrentValue = false,
 	Callback = function(value)
+		if internalChange then 
+			internalChange = false
+			return
+		end
+
 		if currentSound then
 			if value then
 				currentSound:Resume()
@@ -340,8 +346,8 @@ playPause = ControlsTab:CreateToggle({
 			})
 			startErrorSound()
 			task.wait(0.5)
+			internalChange = true
 			playPause:Set(false)
-			return
 		end
 	end,
 })
