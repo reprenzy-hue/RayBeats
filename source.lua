@@ -1,5 +1,5 @@
 --// RayBeats - Local Music Player
---// Once again, This is not an AI generated script, Indentation like this '	' used to make it more minimalist and professional.
+--// Once again, This is NOT an AI-generated script, Indentation like this '	' used to make it more minimalist and professional.
 
 local RayfieldLibrary
 local success, errorMessage = pcall(function()
@@ -26,7 +26,7 @@ local running = true
 local runLabel = true
 local currentSpeed = 1
 local activePlaylist = "None"
-local shufflePlaylist, loopTrack, loopPlaylist
+local playPause, shufflePlaylist, loopTrack, loopPlaylist
 local isPlaylistLooped = false
 local playlists = {}
 local playlistIndex = {}
@@ -48,34 +48,34 @@ starterSound.Looped = false
 --// Error Sound (bruh)
 function startErrorSound()
 	local folderPath = "Rayfield"
-    local filePath = folderPath .."/error.mp3"
-    local fileUrl = "https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/error.mp3"
+	local filePath = folderPath .."/error.mp3"
+	local fileUrl = "https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/error.mp3"
 
-    if not isfile(filePath) then
-        local response = request({Url = fileUrl, Method = "GET"})
-        if response and response.Body then
+	if not isfile(filePath) then
+		local response = request({Url = fileUrl, Method = "GET"})
+		if response and response.Body then
 			if not isfolder(folderPath) then
-            	writefile("error.mp3", response.Body)
+				writefile("error.mp3", response.Body)
 			else
 				writefile(filePath, response.Body)
 			end
-        else
-            warn("An error occurred while downloading assets.")
-            return
-        end
-    end
+		else
+			warn("An error occurred while downloading assets.")
+			return
+		end
+	end
 
-    local errorSound = Instance.new("Sound")
-    errorSound.Parent = game.CoreGui
-    errorSound.Name = "RayBeats Error Sound"
-    errorSound.SoundId = getcustomasset(filePath)
-    errorSound.Volume = 1.1
-    errorSound.Looped = false
-    errorSound:Play()
+	local errorSound = Instance.new("Sound")
+	errorSound.Parent = game.CoreGui
+	errorSound.Name = "RayBeats Error Sound"
+	errorSound.SoundId = getcustomasset(filePath)
+	errorSound.Volume = 1.1
+	errorSound.Looped = false
+	errorSound:Play()
 
-    errorSound.Ended:Connect(function()
-        errorSound:Destroy()
-    end)
+	errorSound.Ended:Connect(function()
+		errorSound:Destroy()
+	end)
 end
 
 local StoneCream = { -- my pfp color
@@ -321,7 +321,7 @@ local playlistLabel = ControlsTab:CreateLabel("<b>Active Playlist</b> None", "li
 
 ControlsTab:CreateSection("Controls")
 
-local playPause = ControlsTab:CreateToggle({
+playPause = ControlsTab:CreateToggle({
 	Name = "Pause <font transparency='0.6'>/</font> Resume",
 	CurrentValue = false,
 	Callback = function(value)
@@ -338,6 +338,9 @@ local playPause = ControlsTab:CreateToggle({
 				Image = "circle-slash",
 				Duration = 3
 			})
+			startErrorSound()
+			task.wait(0.5)
+			playPause:Set(false)
 		end
 	end,
 })
@@ -347,6 +350,14 @@ ControlsTab:CreateButton({
 	Callback = function()
 		if currentSound then
 			currentSound.TimePosition = math.max(0, currentSound.TimePosition - 10)
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "No tracks playing!",
+				Image = "circle-slash",
+				Duration = 3
+			})
+			startErrorSound()
 		end
 	end
 })
@@ -361,6 +372,14 @@ ControlsTab:CreateButton({
 			else
 				currentSound.TimePosition = currentSound.TimeLength - 0.1
 			end
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "No tracks playing!",
+				Image = "circle-slash",
+				Duration = 3
+			})
+			startErrorSound()
 		end
 	end
 })
