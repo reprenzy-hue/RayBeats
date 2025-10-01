@@ -8,7 +8,7 @@ end)
 
 if not success or not RayfieldLibrary then
 	game.StarterGui:SetCore("SendNotification", {
-		Title = "RayBeats Error",
+		Title = "RayBeats System",
 		Text = "Failed to load Rayfield Library: " .. (errorMessage or "Unknown issue") .. ". Check internet/executor and try again.",
 		Duration = 5
 	})
@@ -33,8 +33,8 @@ local playlistIndex = {}
 local playedTracks = {}
 
 --// RayBeats System Info
-local raybeatsVersion = "4.3"
-local raybeatsBuild = "2025.09.28"
+local raybeatsVersion = "4.4"
+local raybeatsBuild = "2025.10.01"
 local raybeatsRelease = "Stable"
 local raybeatsType = "<b><font color='rgb(34, 139, 34)'>Open Source</font></b>"
 
@@ -44,6 +44,39 @@ starterSound.Name = "RayBeats Starter Sound"
 starterSound.SoundId = "rbxassetid://108626032093243"
 starterSound.Volume = 0.9
 starterSound.Looped = false
+
+--// Error Sound (bruh)
+function startErrorSound()
+	local folderPath = "Rayfield"
+    local filePath = folderPath .."/error.mp3"
+    local fileUrl = "https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/error.mp3"
+
+    if not isfile(filePath) then
+        local response = request({Url = fileUrl, Method = "GET"})
+        if response and response.Body then
+			if not isfolder(folderPath) then
+            	writefile("error.mp3", response.Body)
+			else
+				writefile(filePath, response.Body)
+			end
+        else
+            warn("An error occurred while downloading assets.")
+            return
+        end
+    end
+
+    local errorSound = Instance.new("Sound")
+    errorSound.Parent = game.CoreGui
+    errorSound.Name = "RayBeats Error Sound"
+    errorSound.SoundId = getcustomasset(filePath)
+    errorSound.Volume = 1.1
+    errorSound.Looped = false
+    errorSound:Play()
+
+    errorSound.Ended:Connect(function()
+        errorSound:Destroy()
+    end)
+end
 
 local StoneCream = { -- my pfp color
 	TextColor				  	  = Color3.fromRGB(230, 230, 230),
@@ -298,6 +331,13 @@ local playPause = ControlsTab:CreateToggle({
 			else
 				currentSound:Pause()
 			end
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "No tracks playing!",
+				Image = "circle-slash",
+				Duration = 3
+			})
 		end
 	end,
 })
@@ -341,6 +381,7 @@ ControlsTab:CreateButton({
 				Image = "circle-slash",
 				Duration = 4
 			})
+			startErrorSound()
 			return
 		end
 
@@ -366,6 +407,7 @@ ControlsTab:CreateButton({
 				Image = "circle-slash",
 				Duration = 4
 			})
+			startErrorSound()
 			return
 		end
 
@@ -406,10 +448,11 @@ ControlsTab:CreateButton({
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "You haven't played any songs yet!",
+				Content = "You haven't played any tracks yet!",
 				Image = "circle-slash",
 				Duration = 4
 			})
+			startErrorSound()
 		end
 	end
 })
@@ -789,7 +832,7 @@ How to use:
 	 RayBeats/Pop/song2.mp3
 	 RayBeats/Rock/track1.mp3
 
-3. Re-execute the RayBeats script to load your new songs.
+3. Re-execute the RayBeats script to load your new tracks.
 
 Enjoy your music!
 ]])
@@ -809,6 +852,7 @@ function playTrack(path, soundName, playlistName)
 			Image = "alert-triangle",
 			Duration = 5
 		})
+		startErrorSound()
 		return
 	end
 
@@ -838,6 +882,7 @@ function playTrack(path, soundName, playlistName)
 				Image = "file-x",
 				Duration = 5
 			})
+			startErrorSound()
 			currentSound:Destroy()
 			currentSound = nil
 			activePlaylist = "None"
@@ -925,6 +970,10 @@ function playTrack(path, soundName, playlistName)
 						durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "hourglass", Color3.fromRGB(31, 48, 51))
 					end
 					activePlaylist = "None"
+					if bassBoost then
+						bassBoost.Parent = SoundService
+					end
+					currentSound:Destroy()
 				end
 			end)
 		end
@@ -1033,4 +1082,4 @@ end)
 --yaa umur 12 udah bisa scriptiny, otodidak lah, gw pun awalnya juga bikin script oake bantuan ai🗿
 --gw juga sering dapet nilai 100 di pelajaran b inggris
 --dan modal mt manager cuyyyy😁
--- <font color='rgb(0,0,255)'> mwheheheheheheh</font>
+-- <font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
