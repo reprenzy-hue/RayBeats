@@ -19,12 +19,13 @@ local SoundService = game:GetService("SoundService")
 local currentSound = nil
 local internalChange = false
 local currentSoundVolume = 1
-local currentTrackName = "Nothing"
+local currentTrackName = "None"
 local isLooped = false
 local shuffleEnabled = false
 local bassBoost = nil
 local running = true
 local runLabel = true
+local setCallback = true
 local currentSpeed = 1
 local activePlaylist = "None"
 local playPause, shufflePlaylist, loopTrack, loopPlaylist
@@ -271,8 +272,7 @@ local Titles = {
 	"Mixing deep reverb...",
 	"Clipping audio start...",
 	"Injecting stereo effect...",
-	"Shaping the wave curve...",
-	"Sound check successful..."
+	"Shaping the wave curve..."
 }
 
 local Sebutan = {
@@ -322,36 +322,6 @@ local playlistLabel = ControlsTab:CreateLabel("<b>Active Playlist</b> None", "li
 
 ControlsTab:CreateSection("Controls")
 
-playPause = ControlsTab:CreateToggle({
-	Name = "Pause <font transparency='0.6'>/</font> Resume",
-	CurrentValue = false,
-	Callback = function(value)
-		if internalChange then 
-			internalChange = false
-			return
-		end
-
-		if currentSound then
-			if value then
-				currentSound:Resume()
-			else
-				currentSound:Pause()
-			end
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "No tracks playing!",
-				Image = "circle-slash",
-				Duration = 3
-			})
-			startErrorSound()
-			task.wait(0.5)
-			internalChange = true
-			playPause:Set(false)
-		end
-	end,
-})
-
 ControlsTab:CreateButton({
 	Name = "Rewind <b>10s</b>",
 	Callback = function()
@@ -369,33 +339,69 @@ ControlsTab:CreateButton({
 	end
 })
 
-ControlsTab:CreateButton({
-	Name = "Forward <b>10s</b>",
-	Callback = function()
-		if currentSound then
-			local newPos = currentSound.TimePosition + 10
-			if newPos < currentSound.TimeLength then
-				currentSound.TimePosition = newPos
-			else
-				currentSound.TimePosition = currentSound.TimeLength - 0.1
-			end
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "No tracks playing!",
-				Image = "circle-slash",
-				Duration = 3
-			})
-			startErrorSound()
-		end
-	end
-})
-
 local function getFileName(path)
 	if not path or type(path) ~= "string" then return "Unknown" end
 	path = path:gsub("[\\/]+$", "")
 	return path:match("([^\\/]+)$") or "Unknown"
 end
+
+ControlsTab:CreateButton({
+	Name = "Previous Track",
+	Callback = function()
+		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "No active playlist or tracks available! Please select a track first.",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			startErrorSound()
+			return
+		end
+
+		local currentIndex = playlistIndex[activePlaylist] or 1
+		local prevIndex = currentIndex - 1
+		if prevIndex < 1 then
+			prevIndex = #playlists[activePlaylist]
+		end
+		local prevFile = playlists[activePlaylist][prevIndex]
+		local prevSongName = getFileName(prevFile):gsub("%.[^.]+$", "")
+		playlistIndex[activePlaylist] = prevIndex
+		playTrack(prevFile, prevSongName, activePlaylist)
+	end,
+})
+
+playPause = ControlsTab:CreateToggle({
+	Name = "Pause <font transparency='0.6'>/</font> Resume",
+	CurrentValue = false,
+	Callback = function(value)
+		if internalChange then 
+			internalChange = false
+			return
+		end
+
+		if currentSound then
+			if value then
+				currentSound:Resume()
+			else
+				currentSound:Pause()
+			end
+		else
+			if setCallback then
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "No tracks playing!",
+					Image = "circle-slash",
+					Duration = 3
+				})
+				startErrorSound()
+				task.wait(0.5)
+				internalChange = true
+				playPause:Set(false)
+			end
+		end
+	end,
+})
 
 ControlsTab:CreateButton({
 	Name = "Next Track",
@@ -424,29 +430,25 @@ ControlsTab:CreateButton({
 })
 
 ControlsTab:CreateButton({
-	Name = "Previous Track",
+	Name = "Forward <b>10s</b>",
 	Callback = function()
-		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
+		if currentSound then
+			local newPos = currentSound.TimePosition + 10
+			if newPos < currentSound.TimeLength then
+				currentSound.TimePosition = newPos
+			else
+				currentSound.TimePosition = currentSound.TimeLength - 0.1
+			end
+		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "No active playlist or tracks available! Please select a track first.",
+				Content = "No tracks playing!",
 				Image = "circle-slash",
-				Duration = 4
+				Duration = 3
 			})
 			startErrorSound()
-			return
 		end
-
-		local currentIndex = playlistIndex[activePlaylist] or 1
-		local prevIndex = currentIndex - 1
-		if prevIndex < 1 then
-			prevIndex = #playlists[activePlaylist]
-		end
-		local prevFile = playlists[activePlaylist][prevIndex]
-		local prevSongName = getFileName(prevFile):gsub("%.[^.]+$", "")
-		playlistIndex[activePlaylist] = prevIndex
-		playTrack(prevFile, prevSongName, activePlaylist)
-	end,
+	end
 })
 
 ControlsTab:CreateButton({
@@ -879,7 +881,6 @@ function playTrack(path, soundName, playlistName)
 			Image = "alert-triangle",
 			Duration = 5
 		})
-		startErrorSound()
 		return
 	end
 
@@ -901,7 +902,7 @@ function playTrack(path, soundName, playlistName)
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
 
-	task.delay(1, function()
+	task.delay(3, function()
 		if currentSound and not currentSound.IsLoaded then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -913,6 +914,13 @@ function playTrack(path, soundName, playlistName)
 			currentSound:Destroy()
 			currentSound = nil
 			activePlaylist = "None"
+			nowPlayingLabel:Set("<b>Now Playing</b> None", "play", Color3.fromRGB(42, 65, 70))
+			durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "hourglass", Color3.fromRGB(31, 48, 51))
+			playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
+			setCallback = false
+			playPause:Set(false)
+			task.wait(0.5)
+			setCallback = true
 		end
 	end)
 
