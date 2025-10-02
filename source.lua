@@ -788,11 +788,11 @@ MiscTab:CreateParagraph({
 "\n- ".. raybeatsRelease .. " Release"
 })
 
-local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 119631975477627, Color3.fromRGB(170, 165, 130))
+local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
 task.spawn(function()
 	while runLabel do
 		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The " .. Sebutan[math.random(1, #Sebutan)]
-		myInfo:Set(randomTitle, 119631975477627, Color3.fromRGB(170, 165, 130))
+		myInfo:Set(randomTitle, 136044480572973, Color3.fromRGB(170, 165, 130))
 		task.wait(1)
 	end
 end)
