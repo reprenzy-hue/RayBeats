@@ -15,24 +15,36 @@ if not success or not RayfieldLibrary then
 	return
 end
 
+--// Services
 local SoundService = game:GetService("SoundService")
-local currentSound = nil
-local internalChange = false
-local currentSoundVolume = 1
-local currentTrackName = "None"
-local isLooped = false
-local shuffleEnabled = false
+
+--// Current state / data
+local activePlaylist = "None"
 local bassBoost = nil
+local currentSound = nil
+local currentSoundVolume = 1
+local currentSpeed = 1
+local currentTrackName = "None"
+
+--// Flags
+local internalChange = false
+local isLooped = false
+local isPlaylistLooped = false
 local running = true
 local runLabel = true
 local setCallback = true
-local currentSpeed = 1
-local activePlaylist = "None"
-local playPause, shufflePlaylist, loopTrack, loopPlaylist
-local isPlaylistLooped = false
+local shuffleEnabled = false
+
+--// Playlist data
 local playlists = {}
 local playlistIndex = {}
 local playedTracks = {}
+
+--// Callbacks / Controls
+local loopPlaylist
+local loopTrack
+local playPause
+local shufflePlaylist
 
 --// RayBeats System Info
 local raybeatsVersion = "4.4"
