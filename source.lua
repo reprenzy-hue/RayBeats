@@ -48,7 +48,7 @@ starterSound.Volume = 0.9
 starterSound.Looped = false
 
 --// Error Sound (bruh)
-function startErrorSound()
+local function startErrorSound()
 	local folderPath = "Rayfield"
 	local filePath = folderPath .."/error.mp3"
 	local fileUrl = "https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/error.mp3"
@@ -873,7 +873,7 @@ Enjoy your music!
 	})
 end
 
-function playTrack(path, soundName, playlistName)
+local function playTrack(path, soundName, playlistName)
 	if not getcustomasset then
 		RayfieldLibrary:Notify({
 			Title = "RayBeats System",
