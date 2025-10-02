@@ -559,7 +559,7 @@ shufflePlaylist = ControlsTab:CreateToggle({
 				Image = "shuffle",
 				Duration = 3
 			})
-			if isLooped  then
+			if isLooped then
 				loopTrack:Set(false)
 			end
 			if isPlaylistLooped then
@@ -602,46 +602,46 @@ ControlsTab:CreateToggle({
 	end,
 })
 
-local reverbMap = {  
-	["NoReverb"] = Enum.ReverbType.NoReverb,  
-	["GenericReverb"] = Enum.ReverbType.GenericReverb,  
-	["PaddedCell"] = Enum.ReverbType.PaddedCell,  
-	["Room"] = Enum.ReverbType.Room,  
-	["Bathroom"] = Enum.ReverbType.Bathroom,  
-	["LivingRoom"] = Enum.ReverbType.LivingRoom,  
-	["StoneRoom"] = Enum.ReverbType.StoneRoom,  
-	["Auditorium"] = Enum.ReverbType.Auditorium,  
-	["ConcertHall"] = Enum.ReverbType.ConcertHall,  
-	["Cave"] = Enum.ReverbType.Cave,  
-	["Arena"] = Enum.ReverbType.Arena,  
-	["Hangar"] = Enum.ReverbType.Hangar,  
-	["CarpettedHallway"] = Enum.ReverbType.CarpettedHallway,  
-	["Hallway"] = Enum.ReverbType.Hallway,  
-	["StoneCorridor"] = Enum.ReverbType.StoneCorridor,  
-	["Alley"] = Enum.ReverbType.Alley,  
-	["Forest"] = Enum.ReverbType.Forest,  
-	["City"] = Enum.ReverbType.City,  
-	["Mountains"] = Enum.ReverbType.Mountains,  
-	["Quarry"] = Enum.ReverbType.Quarry,  
-	["Plain"] = Enum.ReverbType.Plain,  
+local reverbMap = {
+	["NoReverb"] = Enum.ReverbType.NoReverb,
+	["GenericReverb"] = Enum.ReverbType.GenericReverb,
+	["PaddedCell"] = Enum.ReverbType.PaddedCell,
+	["Room"] = Enum.ReverbType.Room,
+	["Bathroom"] = Enum.ReverbType.Bathroom,
+	["LivingRoom"] = Enum.ReverbType.LivingRoom,
+	["StoneRoom"] = Enum.ReverbType.StoneRoom,
+	["Auditorium"] = Enum.ReverbType.Auditorium,
+	["ConcertHall"] = Enum.ReverbType.ConcertHall,
+	["Cave"] = Enum.ReverbType.Cave,
+	["Arena"] = Enum.ReverbType.Arena,
+	["Hangar"] = Enum.ReverbType.Hangar,
+	["CarpettedHallway"] = Enum.ReverbType.CarpettedHallway,
+	["Hallway"] = Enum.ReverbType.Hallway,
+	["StoneCorridor"] = Enum.ReverbType.StoneCorridor,
+	["Alley"] = Enum.ReverbType.Alley,
+	["Forest"] = Enum.ReverbType.Forest,
+	["City"] = Enum.ReverbType.City,
+	["Mountains"] = Enum.ReverbType.Mountains,
+	["Quarry"] = Enum.ReverbType.Quarry,
+	["Plain"] = Enum.ReverbType.Plain,
 	["ParkingLot"] = Enum.ReverbType.ParkingLot,
 	["SewerPipe"] = Enum.ReverbType.SewerPipe,
 	["UnderWater"] = Enum.ReverbType.UnderWater
-}  
-  
+}
+
 local globalReverb = ControlsTab:CreateDropdown({
 	Name = "Reverb <font transparency='0.6'>Global</font>",
 	Options = {
-		"NoReverb", "GenericReverb", "PaddedCell", "Room", "Bathroom",  
-		"LivingRoom", "StoneRoom", "Auditorium", "ConcertHall", "Cave",  
-		"Arena", "Hangar", "CarpettedHallway", "Hallway", "StoneCorridor",  
-		"Alley", "Forest", "City", "Mountains", "Quarry",  
-		"Plain", "ParkingLot", "SewerPipe", "UnderWater"  
+		"NoReverb", "GenericReverb", "PaddedCell", "Room", "Bathroom",
+		"LivingRoom", "StoneRoom", "Auditorium", "ConcertHall", "Cave",
+		"Arena", "Hangar", "CarpettedHallway", "Hallway", "StoneCorridor",
+		"Alley", "Forest", "City", "Mountains", "Quarry",
+		"Plain", "ParkingLot", "SewerPipe", "UnderWater"
 	},
 	CurrentOption = "NoReverb",
 	Callback = function(reverbOption)
 		local selected = reverbOption[1]
-		game:GetService("SoundService").AmbientReverb = reverbMap[selected]  
+		game:GetService("SoundService").AmbientReverb = reverbMap[selected]
 	end
 })
 
@@ -768,7 +768,7 @@ Once you have made the folder you can import your <font face='RobotoMono'>.mp3</
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>RayBeats v".. raybeatsVersion .." Build-".. raybeatsBuild .."</b>",
 	Content = [[
-<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b>
+<b>Created by <font color='rgb(220, 215, 180)'>Fyan <font transparency='0.6'>or FyanDev</font></font></b>
 <b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
 <b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
 
@@ -776,16 +776,16 @@ MiscTab:CreateParagraph({
 "\n- ".. raybeatsRelease .. " Release"
 })
 
-local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <font color='#FF0000'>Indo</font>nesia 🇮🇩,  The...", 119631975477627, Color3.fromRGB(170, 165, 130))
+local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 119631975477627, Color3.fromRGB(170, 165, 130))
 task.spawn(function()
 	while runLabel do
-		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <font color='#FF0000'>Indo</font>nesia 🇮🇩, The " .. Sebutan[math.random(1, #Sebutan)]
+		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The " .. Sebutan[math.random(1, #Sebutan)]
 		myInfo:Set(randomTitle, 119631975477627, Color3.fromRGB(170, 165, 130))
 		task.wait(1)
 	end
 end)
 
-MiscTab:CreateSection("Others")
+MiscTab:CreateSection("Other")
 MiscTab:CreateButton({
 	Name = "Subscribe on <b><font color='rgb(255,0,0)'>YouTube</font></b>",
 	Callback = function()
