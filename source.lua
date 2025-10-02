@@ -768,7 +768,7 @@ Once you have made the folder you can import your <font face='RobotoMono'>.mp3</
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>RayBeats v".. raybeatsVersion .." Build-".. raybeatsBuild .."</b>",
 	Content = [[
-<b>Created by <font color='rgb(220, 215, 180)'>Fyan <font transparency='0.6'>or FyanDev</font></font></b>
+<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>or FyanDev</font>
 <b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
 <b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
 
