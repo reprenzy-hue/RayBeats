@@ -124,7 +124,7 @@ local StoneCream = { -- my pfp color
 	ToggleDisabled				  = Color3.fromRGB(100, 100, 100),
 	ToggleEnabledStroke			  = Color3.fromRGB(190, 185, 150),
 	ToggleDisabledStroke		  = Color3.fromRGB(70, 70, 70),
-	ToggleEnabledOuterStroke	  = Color3.fromRGB(22, 22, 24),
+	ToggleEnabledOuterStroke	  = Color3.fromRGB(70, 70, 73),
 	ToggleDisabledOuterStroke	  = Color3.fromRGB(50, 50, 53),
 
 	DropdownSelected			  = Color3.fromRGB(42, 42, 45),
@@ -795,7 +795,7 @@ MiscTab:CreateParagraph({
 local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
 task.spawn(function()
 	while runLabel do
-		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Sebutan[math.random(1, #Ability)] .. "</b>"
+		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>"
 		myInfo:Set(randomTitle, 136044480572973, Color3.fromRGB(170, 165, 130))
 		task.wait(1)
 	end
