@@ -399,7 +399,7 @@ playPause = ControlsTab:CreateToggle({
 				currentSound:Pause()
 			end
 		else
-			if setCallback then
+			if setCallback and not currentSound then
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
 					Content = "No tracks playing!",
