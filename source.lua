@@ -49,7 +49,7 @@ local shufflePlaylist
 --// RayBeats System Info
 local raybeatsVersion = "4.4"
 local raybeatsBuild = "2025.10.01"
-local raybeatsRelease = "Stable"
+local raybeatsRelease = "<b>Stable</b>"
 local raybeatsType = "<b><font color='rgb(34, 139, 34)'>Open Source</font></b>"
 
 local starterSound = Instance.new("Sound")	
@@ -287,7 +287,7 @@ local Titles = {
 	"Shaping the wave curve..."
 }
 
-local Sebutan = {
+local Ability = {
 	"Scripter","Coder","Programmer","Developer","Debugger",
 	"Function Maker","Code Wizard","Lua Lord","API Hunter","Syntax Master",
 	"Script Architect","Logic Crafter","Code Alchemist","Variable Master","Function Lord",
@@ -795,7 +795,7 @@ MiscTab:CreateParagraph({
 local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
 task.spawn(function()
 	while runLabel do
-		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The " .. Sebutan[math.random(1, #Sebutan)]
+		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Sebutan[math.random(1, #Ability)] .. "</b>"
 		myInfo:Set(randomTitle, 136044480572973, Color3.fromRGB(170, 165, 130))
 		task.wait(1)
 	end
@@ -873,8 +873,8 @@ How to use:
 
 2. Put your .mp3 files into those subfolders.
    Example:
-	 RayBeats/Pop/song1.mp3
-	 RayBeats/Pop/song2.mp3
+	 RayBeats/Pop/track1.mp3
+	 RayBeats/Pop/track2.mp3
 	 RayBeats/Rock/track1.mp3
 
 3. Re-execute the RayBeats script to load your new tracks.
@@ -1095,13 +1095,13 @@ for _, folder in pairs(listfiles("RayBeats")) do
 		for idx, file in ipairs(files) do
 			table.insert(playlists[tabName], file)
 			local buttonIndex = #playlists[tabName]
-			local songName = getFileName(file):gsub("%.[^.]+$", "")
+			local trackName = getFileName(file):gsub("%.[^.]+$", "")
 			Tab:CreateButton({
-				Name = songName,
+				Name = trackName,
 				Callback = function()
 					activePlaylist = tabName
 					playlistIndex[tabName] = buttonIndex
-					playTrack(file, songName, tabName)
+					playTrack(file, trackName, tabName)
 				end
 			})
 		end
@@ -1137,3 +1137,5 @@ end)
 --gw juga sering dapet nilai 100 di pelajaran b inggris
 --dan modal mt manager cuyyyy😁
 -- <font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
+
+--entod asu
