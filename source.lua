@@ -399,7 +399,7 @@ playPause = ControlsTab:CreateToggle({
 				currentSound:Pause()
 			end
 		else
-			if setCallback and not currentSound then
+			if setCallback then
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
 					Content = "No tracks playing!",
@@ -772,9 +772,13 @@ MiscTab:CreateSection("Information")
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>How to use RayBeats</b>",
 	Content = [[
-In order for tracks to be added to RayBeats, You must open your device's file explorer and find the dedicated workspace for your executor, Once you've done that find 'RayBeats' and create a folder in there for your playlist.
+To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.  
 
-Once you have made the folder you can import your <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font> files and re-execute the script.]]
+Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name this folder based on your preference, as it will serve as the location for your track files.  
+
+After setting up the folder, you can begin importing your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.  
+
+When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
 })
 
 MiscTab:CreateParagraph({
@@ -900,7 +904,7 @@ local function playTrack(path, soundName, playlistName)
 
 	if currentSound then
 		if bassBoost then
-			bassBoost.Parent = SoundService
+			bassBoost.Parent = workspace
 		end
 		currentSound:Stop()
 		currentSound:Destroy()
@@ -1018,9 +1022,12 @@ local function playTrack(path, soundName, playlistName)
 					end
 					activePlaylist = "None"
 					if bassBoost then
-						bassBoost.Parent = SoundService
+						bassBoost.Parent = workspace
 					end
-					currentSound:Destroy()
+					if currentSound then
+						currentSound:Destroy()
+						currentSound = false
+					end
 				end
 			end)
 		end
