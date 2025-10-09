@@ -46,9 +46,9 @@ local currentTrackName = "None"
 local internalChange = false
 local isLooped = false
 local isPlaylistLooped = false
-local running = true
+local isDurationStarted = true
 local runRandomAbilityText = true
-local setCallback = true
+local allowPlayPauseNotificationError = true
 local shuffleEnabled = false
 
 --// Playlist data
@@ -63,8 +63,8 @@ local playPause
 local shufflePlaylist
 
 --// RayBeats System Info
-local raybeatsVersion = "4.4"
-local raybeatsBuild = "2025.10.01"
+local raybeatsVersion = "4.6"
+local raybeatsBuild = "2025.10.10"
 local raybeatsRelease = "<b>Stable</b>"
 local raybeatsType = "<b><font color='rgb(34, 139, 34)'>Open Source</font></b>"
 
@@ -402,7 +402,7 @@ playPause = ControlsTab:CreateToggle({
 				currentSound:Pause()
 			end
 		else
-			if setCallback then
+			if allowPlayPauseNotificationError then
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
 					Content = "No tracks playing!",
@@ -465,6 +465,8 @@ ControlsTab:CreateButton({
 		end
 	end
 })
+
+ControlsTab:CreateDivider()
 
 ControlsTab:CreateButton({
 	Name = "Stop Track",
@@ -707,6 +709,8 @@ ControlsTab:CreateButton({
 	end,
 })
 
+ControlsTab:CreateDivider()
+
 ControlsTab:CreateButton({
 	Name = "Reset Track Playback Speed",
 	Callback = function()
@@ -828,7 +832,7 @@ MiscTab:CreateButton({
 MiscTab:CreateButton({
 	Name = "Reload RayBeats",
 	Callback = function()
-		running = false
+		isDurationStarted = false
 		runRandomAbilityText = false
 		game:GetService("SoundService").AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
@@ -848,7 +852,7 @@ MiscTab:CreateButton({
 MiscTab:CreateButton({
 	Name = "Destroy RayBeats",
 	Callback = function()
-		running = false
+		isDurationStarted = false
 		runRandomAbilityText = false
 		game:GetService("SoundService").AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
@@ -942,10 +946,10 @@ local function playTrack(path, soundName, playlistName)
 			nowPlayingLabel:Set("<b>Now Playing</b> None", "play", Color3.fromRGB(42, 65, 70))
 			durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "hourglass", Color3.fromRGB(31, 48, 51))
 			playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
-			setCallback = false
+			allowPlayPauseNotificationError = false
 			playPause:Set(false)
 			task.wait(0.5)
-			setCallback = true
+			allowPlayPauseNotificationError = true
 		end
 	end)
 
@@ -1035,7 +1039,7 @@ local function playTrack(path, soundName, playlistName)
 					end
 					if currentSound then
 						currentSound:Destroy()
-						currentSound = false
+						currentSound = nil
 					end
 				end
 			end)
@@ -1118,9 +1122,9 @@ for _, folder in pairs(listfiles("RayBeats")) do
 end
 
 task.spawn(function()
-	while running do
+	while isDurationStarted do
 		task.wait(0.5)
-		if not running then break end
+		if not isDurationStarted then break end
 		if currentSound then
 			local time = math.floor(currentSound.TimePosition)
 			local total = math.floor(currentSound.TimeLength)
