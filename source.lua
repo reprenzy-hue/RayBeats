@@ -1,4 +1,20 @@
---// RayBeats - Local Music Player
+--// FyanLicense v1.0
+--// For: RayBeats
+--// Created by: Fyan (2025)
+--//
+--// Permission is granted to anyone to use, modify, and share this script freely,
+--// as long as proper credit to the original creator (Fyan) is clearly retained.
+--//
+--// You are NOT allowed to:
+--// - Sell or monetize this script in any form.
+--// - Reupload this script under a different name or author.
+--// - Remove or alter this license section.
+--//
+--// This project is open for learning and contribution purposes only.
+--// Provided "as is" without any warranty or guarantee of functionality.
+--//
+--// RayBeats © 2025 Fyan. All rights reserved.
+
 --// Once again, This is NOT an AI-generated script, Indentation like this '	' used to make it more minimalist and professional.
 
 local RayfieldLibrary
@@ -9,7 +25,7 @@ end)
 if not success or not RayfieldLibrary then
 	game.StarterGui:SetCore("SendNotification", {
 		Title = "RayBeats System",
-		Text = "Failed to load Rayfield Library: " .. (errorMessage or "Unknown issue") .. ". Check internet/executor and try again.",
+		Text = "Failed to load Rayfield Library. Try to re-execute",
 		Duration = 5
 	})
 	return
@@ -31,7 +47,7 @@ local internalChange = false
 local isLooped = false
 local isPlaylistLooped = false
 local running = true
-local runLabel = true
+local runRandomAbilityText = true
 local setCallback = true
 local shuffleEnabled = false
 
@@ -287,27 +303,14 @@ local Titles = {
 	"Shaping the wave curve..."
 }
 
+--// Ability text reduced to optimize script
 local Ability = {
-	"Scripter","Coder","Programmer","Developer","Debugger",
-	"Function Maker","Code Wizard","Lua Lord","API Hunter","Syntax Master",
-	"Script Architect","Logic Crafter","Code Alchemist","Variable Master","Function Lord",
-	"Runtime Hacker","Console Tamer","Algorithm Kid","Code Breaker","Loop Lord",
-	"Script Samurai","Code Ninja","Runtime Ruler","API Wizard","Module Maker",
-	"Debug Slayer","Algorithm Lord","Code Hunter","Script Prodigy","Console Lord",
-	"Bit Crafter","Error Fixer","Syntax Hacker","Data Coder","Logic Hacker",
-	"Loop Breaker","Script Demon","Code Gladiator","Memory Handler","Runtime Kid",
-	"Builder","Game Dev","Studio Expert","Obby Maker","GUI Designer",
-	"Animator","Plugin Maker","LocalPlayer Ruler","Modeler","Script Executor",
-	"Tycoon Builder","Simulator Dev","HD Admin Master","Baseplate Ruler","Part Manipulator",
-	"Physics Hacker","Event Handler","Remote Caller","GUI Wizard","Server-Side Slayer",
-	"Mesh Maker","Lighting Lord","Game Architect","Server Dev","Local Dev",
-	"Part Builder","Roblox Engineer","Asset Crafter","Studio Hacker","Roblox Innovator",
-	"Themer","App Builder","KLWP Master","KWGT Ruler","APK Editor",
-	"Widget Maker","Customizer","ROM Freak","Android Hacker","Automator",
-	"UI/UX Architect","Widget Crafter","Material You Freak","Overlay Hacker","Shortcut Engineer",
-	"Launcher Wizard","APK Patcher","Beta Breaker","Root Lord","System Tinkerer",
-	"UI Tuner","Widget Hacker","Launcher Lord","Shortcut Master","Custom ROMer",
-	"System Modder","APK Hacker","UI/UX Hacker","Theme Builder","Android Architect",
+	"Scripter",
+	"Coder",
+	"Programmer",
+	"Developer",
+	"Debugger",
+	"UI Designer"
 }
 
 local Window = RayfieldLibrary:CreateWindow({
@@ -776,7 +779,7 @@ To add your custom tracks to RayBeats, start by opening your device’s file exp
 
 Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name this folder based on your preference, as it will serve as the location for your track files.  
 
-After setting up the folder, you can begin importing your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.  
+After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.  
 
 When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
 })
@@ -794,9 +797,8 @@ MiscTab:CreateParagraph({
 
 local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
 task.spawn(function()
-	while runLabel do
-		local randomTitle = "<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>"
-		myInfo:Set(randomTitle, 136044480572973, Color3.fromRGB(170, 165, 130))
+	while runRandomAbilityText do
+		myInfo:Set("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>", 136044480572973, Color3.fromRGB(170, 165, 130))
 		task.wait(1)
 	end
 end)
@@ -817,10 +819,17 @@ MiscTab:CreateButton({
 })
 
 MiscTab:CreateButton({
+	Name = "Send Feedback",
+	Callback = function()
+		setclipboard("https://raybeats.canny.io")
+	end
+})
+
+MiscTab:CreateButton({
 	Name = "Reload RayBeats",
 	Callback = function()
 		running = false
-		runLabel = false
+		runRandomAbilityText = false
 		game:GetService("SoundService").AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
@@ -840,7 +849,7 @@ MiscTab:CreateButton({
 	Name = "Destroy RayBeats",
 	Callback = function()
 		running = false
-		runLabel = false
+		runRandomAbilityText = false
 		game:GetService("SoundService").AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
@@ -952,7 +961,7 @@ local function playTrack(path, soundName, playlistName)
 			currentTrackName = getFileName(path)
 			local name = getFileName(currentSound.SoundId or "<font color='rgb(255, 100, 100)'>Unknown</font>")
 			if nowPlayingLabel then
-				nowPlayingLabel:Set("<b>Now Playing</b> " .. (name or "<font color='rgb(255, 100, 100)'>Unknown</font>"), "play", Color3.fromRGB(42, 65, 70))
+				nowPlayingLabel:Set("<b>Now Playing</b> " .. (name or "<font color='rgb(255, 100, 100)'>Unknown</font>"):gsub("%.[^.]+$", ""), "play", Color3.fromRGB(42, 65, 70))
 			end
 			if playlistLabel then
 				playlistLabel:Set("<b>Active Playlist</b> " .. (playlistName or "None"), "list-video", Color3.fromRGB(20, 31, 33))
@@ -1136,6 +1145,6 @@ end)
 --yaa umur 12 udah bisa scriptiny, otodidak lah, gw pun awalnya juga bikin script oake bantuan ai🗿
 --gw juga sering dapet nilai 100 di pelajaran b inggris
 --dan modal mt manager cuyyyy😁
--- <font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
-
+--<font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
+--rayfield support RichText ya? baru tau gw
 --entod asu
