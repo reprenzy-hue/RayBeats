@@ -32,7 +32,7 @@ if not success or not RayfieldLibrary then
 end
 
 --// Services
-local SoundService = game:GetService("SoundService")
+local soundService = game:GetService("SoundService")
 
 --// Current state / data
 local activePlaylist = "None"
@@ -43,13 +43,13 @@ local currentSpeed = 1
 local currentTrackName = "None"
 
 --// Flags
-local internalChange = false
+local allowPlayPauseNotificationError = true
+local internalChangeForPlayPause = false
 local isLooped = false
 local isPlaylistLooped = false
 local isDurationStarted = true
+local isShuffleEnabled = false
 local runRandomAbilityText = true
-local allowPlayPauseNotificationError = true
-local shuffleEnabled = false
 
 --// Playlist data
 local playlists = {}
@@ -303,7 +303,6 @@ local Titles = {
 	"Shaping the wave curve..."
 }
 
---// Ability text reduced to optimize script
 local Ability = {
 	"Scripter",
 	"Coder",
@@ -345,9 +344,9 @@ ControlsTab:CreateButton({
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "No tracks playing!",
+				Content = "You haven't played any tracks yet!",
 				Image = "circle-slash",
-				Duration = 3
+				Duration = 4
 			})
 			startErrorSound()
 		end
@@ -366,7 +365,7 @@ ControlsTab:CreateButton({
 		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "No active playlist or tracks available! Please select a track first.",
+				Content = "You haven't played any tracks yet!",
 				Image = "circle-slash",
 				Duration = 4
 			})
@@ -390,8 +389,8 @@ playPause = ControlsTab:CreateToggle({
 	Name = "Pause <font transparency='0.6'>/</font> Resume",
 	CurrentValue = false,
 	Callback = function(value)
-		if internalChange then 
-			internalChange = false
+		if internalChangeForPlayPause then 
+			internalChangeForPlayPause = false
 			return
 		end
 
@@ -405,13 +404,13 @@ playPause = ControlsTab:CreateToggle({
 			if allowPlayPauseNotificationError then
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
-					Content = "No tracks playing!",
+					Content = "You haven't played any tracks yet!",
 					Image = "circle-slash",
-					Duration = 3
+					Duration = 4
 				})
 				startErrorSound()
 				task.wait(0.5)
-				internalChange = true
+				internalChangeForPlayPause = true
 				playPause:Set(false)
 			end
 		end
@@ -424,7 +423,7 @@ ControlsTab:CreateButton({
 		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "No active playlist or tracks available! Please select a track first.",
+				Content = "You haven't played any tracks yet!",
 				Image = "circle-slash",
 				Duration = 4
 			})
@@ -457,9 +456,9 @@ ControlsTab:CreateButton({
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "No tracks playing!",
+				Content = "You haven't played any tracks yet!",
 				Image = "circle-slash",
-				Duration = 3
+				Duration = 4
 			})
 			startErrorSound()
 		end
@@ -503,6 +502,8 @@ ControlsTab:CreateButton({
 	end
 })
 
+ControlsTab:CreateDivider()
+
 loopPlaylist = ControlsTab:CreateToggle({
 	Name = "Loop Playlist",
 	CurrentValue = false,
@@ -518,7 +519,7 @@ loopPlaylist = ControlsTab:CreateToggle({
 			if isLooped then
 				loopTrack:Set(false)
 			end
-			if shuffleEnabled then
+			if isShuffleEnabled then
 				shufflePlaylist:Set(false)
 			end
 		else
@@ -550,7 +551,7 @@ loopTrack = ControlsTab:CreateToggle({
 			if isPlaylistLooped then
 				loopPlaylist:Set(false)
 			end
-			if shuffleEnabled then
+			if isShuffleEnabled then
 				shufflePlaylist:Set(false)
 			end
 		else
@@ -568,7 +569,7 @@ shufflePlaylist = ControlsTab:CreateToggle({
 	Name = "Shuffle Playlist",
 	CurrentValue = false,
 	Callback = function(value)
-		shuffleEnabled = value
+		isShuffleEnabled = value
 		if value then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -649,16 +650,35 @@ local reverbMap = {
 local globalReverb = ControlsTab:CreateDropdown({
 	Name = "Reverb <font transparency='0.6'>Global</font>",
 	Options = {
-		"NoReverb", "GenericReverb", "PaddedCell", "Room", "Bathroom",
-		"LivingRoom", "StoneRoom", "Auditorium", "ConcertHall", "Cave",
-		"Arena", "Hangar", "CarpettedHallway", "Hallway", "StoneCorridor",
-		"Alley", "Forest", "City", "Mountains", "Quarry",
-		"Plain", "ParkingLot", "SewerPipe", "UnderWater"
+		"NoReverb",
+		"GenericReverb",
+		"PaddedCell",
+		"Room",
+		"Bathroom",
+		"LivingRoom",
+		"StoneRoom",
+		"Auditorium",
+		"ConcertHall",
+		"Cave",
+		"Arena",
+		"Hangar",
+		"CarpettedHallway",
+		"Hallway",
+		"StoneCorridor",
+		"Alley",
+		"Forest",
+		"City",
+		"Mountains",
+		"Quarry",
+		"Plain",
+		"ParkingLot",
+		"SewerPipe",
+		"UnderWater"
 	},
 	CurrentOption = "NoReverb",
 	Callback = function(reverbOption)
 		local selected = reverbOption[1]
-		game:GetService("SoundService").AmbientReverb = reverbMap[selected]
+		soundService.AmbientReverb = reverbMap[selected]
 	end
 })
 
@@ -712,7 +732,7 @@ ControlsTab:CreateButton({
 ControlsTab:CreateDivider()
 
 ControlsTab:CreateButton({
-	Name = "Reset Track Playback Speed",
+	Name = "Reset Speed Effect",
 	Callback = function()
 		currentSpeed = 1
 		if currentSound then
@@ -770,7 +790,7 @@ game.DescendantAdded:Connect(function(obj)
 	end
 end)
 
-local MiscTab = Window:CreateTab("Misc", "info")
+local MiscTab = Window:CreateTab("Misc", "ellipsis")
 
 MiscTab:CreateLabel("If you use a headset/headphone, <b>Please lower the volume</b> below 60% to avoid damaging your ears.", "ear", Color3.fromRGB(255, 100, 100), false)
 MiscTab:CreateDivider()
@@ -781,7 +801,7 @@ MiscTab:CreateParagraph({
 	Content = [[
 To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.  
 
-Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name this folder based on your preference, as it will serve as the location for your track files.  
+Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
 
 After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.  
 
@@ -796,7 +816,7 @@ MiscTab:CreateParagraph({
 <b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
 
 - RayBeats is ]].. raybeatsType ..
-"\n- ".. raybeatsRelease .. " Release"
+"\n- " .. raybeatsRelease .. " Release"
 })
 
 local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
@@ -834,7 +854,7 @@ MiscTab:CreateButton({
 	Callback = function()
 		isDurationStarted = false
 		runRandomAbilityText = false
-		game:GetService("SoundService").AmbientReverb = Enum.ReverbType.NoReverb
+		soundService.AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 		end
@@ -854,7 +874,7 @@ MiscTab:CreateButton({
 	Callback = function()
 		isDurationStarted = false
 		runRandomAbilityText = false
-		game:GetService("SoundService").AmbientReverb = Enum.ReverbType.NoReverb
+		soundService.AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 		end
@@ -906,7 +926,7 @@ local function playTrack(path, soundName, playlistName)
 	if not getcustomasset then
 		RayfieldLibrary:Notify({
 			Title = "RayBeats System",
-			Content = "This executor does not support local file playback. Please use an executor with 'getcustomasset' support.",
+			Content = identifyexecutor() or "This unknown executor" .. " does not support local file playback. Please use an executor with 'getcustomasset' support.",
 			Image = "alert-triangle",
 			Duration = 5
 		})
@@ -931,11 +951,19 @@ local function playTrack(path, soundName, playlistName)
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
 
-	task.delay(3, function()
-		if currentSound and not currentSound.IsLoaded then
+	task.spawn(function()
+		local loaded = false
+
+		currentSound.Loaded:Connect(function()
+			loaded = true
+		end)
+
+		task.wait(8)
+
+		if currentSound and not loaded then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "Something went wrong while playing this track, Please convert this track to the listed file format or Try again.",
+				Content = "Something went wrong while playing this track. Please convert this track to the listed file format or try again.",
 				Image = "file-x",
 				Duration = 5
 			})
@@ -985,7 +1013,7 @@ local function playTrack(path, soundName, playlistName)
 					return
 				end
 
-				if shuffleEnabled and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
+				if isShuffleEnabled and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
 					table.insert(playedTracks, path)
 
 					if #playedTracks >= #playlists[activePlaylist] then
@@ -1151,4 +1179,6 @@ end)
 --dan modal mt manager cuyyyy😁
 --<font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
 --rayfield support RichText ya? baru tau gw
---entod asu
+--entod asu, dibilang sok inggris sama orang yang ga bisa bahasa inggris🤭🤭
+--mana nih, kok dikit viewers RayBeats di Scriptblox
+--hadehhh gini ya punya zodiak Gemini, banyak ngomongnya😐
