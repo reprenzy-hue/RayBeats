@@ -105,45 +105,45 @@ local function startErrorSound()
 end
 
 local StoneCream = { -- my pfp color
-	TextColor					= Color3.fromRGB(230, 230, 230),
-	PlaceholderColor			= Color3.fromRGB(140, 140, 140),
+	TextColor					  = Color3.fromRGB(230, 230, 230),
+	PlaceholderColor			  = Color3.fromRGB(140, 140, 140),
 
-	Background					= Color3.fromRGB(22, 22, 24),
-	Topbar						= Color3.fromRGB(28, 28, 30),
-	Shadow						= Color3.fromRGB(15, 15, 17),
+	Background					  = Color3.fromRGB(22, 22, 24),
+	Topbar						  = Color3.fromRGB(28, 28, 30),
+	Shadow						  = Color3.fromRGB(15, 15, 17),
 
-	NotificationBackground		= Color3.fromRGB(20, 20, 22),
+	NotificationBackground		  = Color3.fromRGB(20, 20, 22),
 	NotificationActionsBackground = Color3.fromRGB(35, 35, 38),
 
-	TabBackground				= Color3.fromRGB(35, 35, 38),
-	TabStroke					= Color3.fromRGB(50, 50, 53),
-	TabBackgroundSelected		= Color3.fromRGB(220, 215, 180),
-	TabTextColor				= Color3.fromRGB(230, 230, 230),
-	SelectedTabTextColor		= Color3.fromRGB(22, 22, 24),
+	TabBackground				  = Color3.fromRGB(35, 35, 38),
+	TabStroke					  = Color3.fromRGB(50, 50, 53),
+	TabBackgroundSelected		  = Color3.fromRGB(220, 215, 180),
+	TabTextColor				  = Color3.fromRGB(230, 230, 230),
+	SelectedTabTextColor		  = Color3.fromRGB(22, 22, 24),
 
-	ElementBackground			= Color3.fromRGB(32, 32, 35),
-	ElementBackgroundHover		= Color3.fromRGB(42, 42, 45),
-	SecondaryElementBackground	= Color3.fromRGB(22, 22, 24),
-	ElementStroke				= Color3.fromRGB(55, 55, 58),
-	SecondaryElementStroke		= Color3.fromRGB(45, 45, 48),
-			
-	SliderBackground			= Color3.fromRGB(40, 40, 43),
-	SliderProgress				= Color3.fromRGB(195, 180, 145),
-	SliderStroke				= Color3.fromRGB(190, 185, 150),
+	ElementBackground			  = Color3.fromRGB(32, 32, 35),
+	ElementBackgroundHover		  = Color3.fromRGB(42, 42, 45),
+	SecondaryElementBackground	  = Color3.fromRGB(22, 22, 24),
+	ElementStroke				  = Color3.fromRGB(55, 55, 58),
+	SecondaryElementStroke		  = Color3.fromRGB(45, 45, 48),
 
-	ToggleBackground			= Color3.fromRGB(32, 32, 35),
-	ToggleEnabled				= Color3.fromRGB(220, 215, 180),
-	ToggleDisabled				= Color3.fromRGB(100, 100, 100),
-	ToggleEnabledStroke			= Color3.fromRGB(190, 185, 150),
-	ToggleDisabledStroke		= Color3.fromRGB(70, 70, 70),
-	ToggleEnabledOuterStroke	= Color3.fromRGB(70, 70, 73),
-	ToggleDisabledOuterStroke	= Color3.fromRGB(50, 50, 53),
+	SliderBackground			  = Color3.fromRGB(40, 40, 43),
+	SliderProgress				  = Color3.fromRGB(195, 180, 145),
+	SliderStroke				  = Color3.fromRGB(190, 185, 150),
 
-	DropdownSelected			= Color3.fromRGB(42, 42, 45),
-	DropdownUnselected			= Color3.fromRGB(32, 32, 35),
+	ToggleBackground			  = Color3.fromRGB(32, 32, 35),
+	ToggleEnabled				  = Color3.fromRGB(220, 215, 180),
+	ToggleDisabled				  = Color3.fromRGB(100, 100, 100),
+	ToggleEnabledStroke			  = Color3.fromRGB(190, 185, 150),
+	ToggleDisabledStroke		  = Color3.fromRGB(70, 70, 70),
+	ToggleEnabledOuterStroke	  = Color3.fromRGB(70, 70, 73),
+	ToggleDisabledOuterStroke	  = Color3.fromRGB(50, 50, 53),
 
-	InputBackground				= Color3.fromRGB(32, 32, 35),
-	InputStroke				 	= Color3.fromRGB(55, 55, 58)
+	DropdownSelected			  = Color3.fromRGB(42, 42, 45),
+	DropdownUnselected			  = Color3.fromRGB(32, 32, 35),
+
+	InputBackground				  = Color3.fromRGB(32, 32, 35),
+	InputStroke				 	  = Color3.fromRGB(55, 55, 58)
 }
 
 local Titles = {
@@ -322,7 +322,7 @@ local Window = RayfieldLibrary:CreateWindow({
 	KeySystem = false
 })
 
-local ControlsTab = Window:CreateTab("Controls", "sliders-horizontal")
+local ControlsTab = Window:CreateTab("Controls", "settings-2")
 
 ControlsTab:CreateSection("Track Info")
 
@@ -332,590 +332,10 @@ local playlistLabel = ControlsTab:CreateLabel("<b>Active Playlist</b> None", "li
 
 ControlsTab:CreateSection("Controls")
 
-ControlsTab:CreateButton({
-	Name = "Rewind <b>10s</b>",
-	Callback = function()
-		if currentSound then
-			currentSound.TimePosition = math.max(0, currentSound.TimePosition - 10)
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "You haven't played any tracks yet!",
-				Image = "circle-slash",
-				Duration = 4
-			})
-			startErrorSound()
-		end
-	end
-})
-
 local function getFileName(path)
 	if not path or type(path) ~= "string" then return "Unknown" end
 	path = path:gsub("[\\/]+$", "")
 	return path:match("([^\\/]+)$") or "Unknown"
-end
-
-ControlsTab:CreateButton({
-	Name = "Previous Track",
-	Callback = function()
-		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "You haven't played any tracks yet!",
-				Image = "circle-slash",
-				Duration = 4
-			})
-			startErrorSound()
-			return
-		end
-
-		local currentIndex = playlistIndex[activePlaylist] or 1
-		local prevIndex = currentIndex - 1
-		if prevIndex < 1 then
-			prevIndex = #playlists[activePlaylist]
-		end
-		local prevFile = playlists[activePlaylist][prevIndex]
-		local prevSongName = getFileName(prevFile):gsub("%.[^.]+$", "")
-		playlistIndex[activePlaylist] = prevIndex
-		playTrack(prevFile, prevSongName, activePlaylist)
-	end,
-})
-
-playPause = ControlsTab:CreateToggle({
-	Name = "Pause <font transparency='0.6'>/</font> Resume",
-	CurrentValue = false,
-	Callback = function(value)
-		if internalChange then 
-			internalChange = false
-			return
-		end
-
-		if currentSound then
-			if value then
-				currentSound:Resume()
-			else
-				currentSound:Pause()
-			end
-		else
-			if allowPlayPauseNotificationError then
-				RayfieldLibrary:Notify({
-					Title = "RayBeats System",
-					Content = "You haven't played any tracks yet!",
-					Image = "circle-slash",
-					Duration = 4
-				})
-				startErrorSound()
-				task.wait(0.5)
-				internalChange = true
-				playPause:Set(false)
-			end
-		end
-	end,
-})
-
-ControlsTab:CreateButton({
-	Name = "Next Track",
-	Callback = function()
-		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "You haven't played any tracks yet!",
-				Image = "circle-slash",
-				Duration = 4
-			})
-			startErrorSound()
-			return
-		end
-
-		local currentIndex = playlistIndex[activePlaylist] or 1
-		local nextIndex = currentIndex + 1
-		if nextIndex > #playlists[activePlaylist] then
-			nextIndex = 1
-		end
-		local nextFile = playlists[activePlaylist][nextIndex]
-		local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
-		playlistIndex[activePlaylist] = nextIndex
-		playTrack(nextFile, nextSongName, activePlaylist)
-	end,
-})
-
-ControlsTab:CreateButton({
-	Name = "Forward <b>10s</b>",
-	Callback = function()
-		if currentSound then
-			local newPos = currentSound.TimePosition + 10
-			if newPos < currentSound.TimeLength then
-				currentSound.TimePosition = newPos
-			else
-				currentSound.TimePosition = currentSound.TimeLength - 0.1
-			end
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "You haven't played any tracks yet!",
-				Image = "circle-slash",
-				Duration = 4
-			})
-			startErrorSound()
-		end
-	end
-})
-
-ControlsTab:CreateDivider()
-
-ControlsTab:CreateButton({
-	Name = "Stop Track",
-	Callback = function()
-		if currentSound and currentSound.IsPlaying then
-			local endedConnection = currentSound:GetAttribute("EndedConnection")
-			if endedConnection then
-				endedConnection:Disconnect()
-			end
-			currentSound.TimePosition = 0
-			currentSound:Pause()
-			if nowPlayingLabel then
-				nowPlayingLabel:Set("<b>Now Playing</b> None", "play", Color3.fromRGB(42, 65, 70))
-			end
-			if durationLabel then
-				durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "hourglass", Color3.fromRGB(31, 48, 51))
-			end
-			if playlistLabel then
-				playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
-			end
-			activePlaylist = "None"
-			playedTracks = {}
-			playPause:Set(false)
-			currentSound:Destroy()
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "You haven't played any tracks yet!",
-				Image = "circle-slash",
-				Duration = 4
-			})
-			startErrorSound()
-		end
-	end
-})
-
-ControlsTab:CreateDivider()
-
-loopPlaylist = ControlsTab:CreateToggle({
-	Name = "Loop Playlist",
-	CurrentValue = false,
-	Callback = function(value)
-		isPlaylistLooped = value
-		if value then
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "Playlist loop activated! Will repeat after last track.",
-				Image = "repeat",
-				Duration = 3
-			})
-			if isLooped then
-				loopTrack:Set(false)
-			end
-			if shuffleEnabled then
-				shufflePlaylist:Set(false)
-			end
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "Playlist loop deactivated.",
-				Image = "repeat",
-				Duration = 3
-			})
-		end
-	end,
-})
-
-loopTrack = ControlsTab:CreateToggle({
-	Name = "Loop Track",
-	CurrentValue = false,
-	Callback = function(value)
-		isLooped = value
-		if currentSound then
-			currentSound.Looped = isLooped
-		end
-		if value then
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "The current track will be repeated continuously.",
-				Image = "repeat",
-				Duration = 3
-			})
-			if isPlaylistLooped then
-				loopPlaylist:Set(false)
-			end
-			if shuffleEnabled then
-				shufflePlaylist:Set(false)
-			end
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "The current track will not be repeated again.",
-				Image = "repeat",
-				Duration = 3
-			})
-		end
-	end,
-})
-
-shufflePlaylist = ControlsTab:CreateToggle({
-	Name = "Shuffle Playlist",
-	CurrentValue = false,
-	Callback = function(value)
-		shuffleEnabled = value
-		if value then
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "Shuffle mode activated! Next track will be random.",
-				Image = "shuffle",
-				Duration = 3
-			})
-			if isLooped then
-				loopTrack:Set(false)
-			end
-			if isPlaylistLooped then
-				loopPlaylist:Set(false)
-			end
-		else
-			RayfieldLibrary:Notify({
-				Title = "RayBeats System",
-				Content = "Shuffle mode deactivated.",
-				Image = "shuffle",
-				Duration = 3
-			})
-		end
-	end,
-})
-
-ControlsTab:CreateSection("Effects")
-
-ControlsTab:CreateToggle({
-	Name = "Track Bass Booster",
-	CurrentValue = false,
-	Callback = function(val)
-		if currentSound then
-			if val then
-				if not bassBoost then
-					bassBoost = Instance.new("EqualizerSoundEffect")
-					bassBoost.Name = "RayBeats Bass Boost"
-					bassBoost.Parent = currentSound
-					bassBoost.LowGain = 8
-					bassBoost.MidGain = 3
-					bassBoost.HighGain = 0
-				end
-			else
-				if bassBoost then
-					bassBoost:Destroy()
-					bassBoost = nil
-				end
-			end
-		end
-	end,
-})
-
-local reverbMap = {
-	["NoReverb"] = Enum.ReverbType.NoReverb,
-	["GenericReverb"] = Enum.ReverbType.GenericReverb,
-	["PaddedCell"] = Enum.ReverbType.PaddedCell,
-	["Room"] = Enum.ReverbType.Room,
-	["Bathroom"] = Enum.ReverbType.Bathroom,
-	["LivingRoom"] = Enum.ReverbType.LivingRoom,
-	["StoneRoom"] = Enum.ReverbType.StoneRoom,
-	["Auditorium"] = Enum.ReverbType.Auditorium,
-	["ConcertHall"] = Enum.ReverbType.ConcertHall,
-	["Cave"] = Enum.ReverbType.Cave,
-	["Arena"] = Enum.ReverbType.Arena,
-	["Hangar"] = Enum.ReverbType.Hangar,
-	["CarpettedHallway"] = Enum.ReverbType.CarpettedHallway,
-	["Hallway"] = Enum.ReverbType.Hallway,
-	["StoneCorridor"] = Enum.ReverbType.StoneCorridor,
-	["Alley"] = Enum.ReverbType.Alley,
-	["Forest"] = Enum.ReverbType.Forest,
-	["City"] = Enum.ReverbType.City,
-	["Mountains"] = Enum.ReverbType.Mountains,
-	["Quarry"] = Enum.ReverbType.Quarry,
-	["Plain"] = Enum.ReverbType.Plain,
-	["ParkingLot"] = Enum.ReverbType.ParkingLot,
-	["SewerPipe"] = Enum.ReverbType.SewerPipe,
-	["UnderWater"] = Enum.ReverbType.UnderWater
-}
-
-local globalReverb = ControlsTab:CreateDropdown({
-	Name = "Reverb <font transparency='0.6'>Global</font>",
-	Options = {
-		"NoReverb",
-		"GenericReverb",
-		"PaddedCell",
-		"Room",
-		"Bathroom",
-		"LivingRoom",
-		"StoneRoom",
-		"Auditorium",
-		"ConcertHall",
-		"Cave",
-		"Arena",
-		"Hangar",
-		"CarpettedHallway",
-		"Hallway",
-		"StoneCorridor",
-		"Alley",
-		"Forest",
-		"City",
-		"Mountains",
-		"Quarry",
-		"Plain",
-		"ParkingLot",
-		"SewerPipe",
-		"UnderWater"
-	},
-	CurrentOption = "NoReverb",
-	Callback = function(reverbOption)
-		local selected = reverbOption[1]
-		LayananSwara.AmbientReverb = reverbMap[selected]
-	end
-})
-
-local playbackSpeed = ControlsTab:CreateSlider({
-	Name = "Track Playback Speed",
-	Range = {0, 2},
-	Increment = 0.01,
-	Suffix = "x",
-	CurrentValue = 1,
-	Callback = function(v)
-		local formatted = string.format("%.2f", v)
-		formatted = formatted:gsub("%.?0+$", "")
-		
-		currentSpeed = tonumber(formatted)
-		if currentSound then
-			currentSound.PlaybackSpeed = currentSpeed
-		end
-	end
-})
-
-ControlsTab:CreateSection("Speed Effect")
-
-ControlsTab:CreateButton({
-	Name = "Slow",
-	Callback = function()
-		playbackSpeed:Set(0.91)
-	end,
-})
-
-ControlsTab:CreateButton({
-	Name = "Slower",
-	Callback = function()
-		playbackSpeed:Set(0.87)
-	end,
-})
-
-ControlsTab:CreateButton({
-	Name = "Slowest",
-	Callback = function()
-		playbackSpeed:Set(0.82)
-	end,
-})
-
-ControlsTab:CreateButton({
-	Name = "Nightcore <font transparency='0.6'>Speed Up</font>",
-	Callback = function()
-		playbackSpeed:Set(1.2)
-	end,
-})
-
-ControlsTab:CreateDivider()
-
-ControlsTab:CreateButton({
-	Name = "Reset Speed Effect",
-	Callback = function()
-		currentSpeed = 1
-		if currentSound then
-			currentSound.PlaybackSpeed = 1
-		end
-		playbackSpeed:Set(1) 
-	end
-})
-
-ControlsTab:CreateSection("Volume")
-
-local trackVolume = ControlsTab:CreateSlider({
-	Name = "Track Volume",
-	Range = {0, 100},
-	Increment = 1,
-	Suffix = "%",
-	CurrentValue = 100,
-	Callback = function(val)
-		currentSoundVolume = val / 100
-		if currentSound then
-			currentSound.Volume = currentSoundVolume
-		end
-	end,
-})
-
-local gameVolume = ControlsTab:CreateSlider({
-	Name = "Game Volume",
-	Range = {0, 100},
-	Increment = 1,
-	Suffix = "%",
-	CurrentValue = 100,
-	Callback = function(val)
-		for _, obj in ipairs(game:GetDescendants()) do
-			if obj:IsA("Sound") and obj ~= currentSound then
-				if val == 100 then
-					obj.Volume = obj:GetAttribute("OriginalVolume") or obj.Volume
-				else
-					if not obj:GetAttribute("OriginalVolume") then
-						obj:SetAttribute("OriginalVolume", obj.Volume)
-					end
-					obj.Volume = (val/100) * (obj:GetAttribute("OriginalVolume") or obj.Volume)
-				end
-			end
-		end
-	end,
-})
-
-game.DescendantAdded:Connect(function(obj)
-	if obj:IsA("Sound") and obj ~= currentSound then
-		obj:SetAttribute("OriginalVolume", obj.Volume)
-		local val = gameVolume.CurrentValue
-		if val < 100 then
-			obj.Volume = (val/100) * (obj:GetAttribute("OriginalVolume") or obj.Volume)
-		end
-	end
-end)
-
-local MiscTab = Window:CreateTab("Miscellaneous", "ellipsis")
-
-MiscTab:CreateLabel("If you use a headset/headphone, <b>Please lower the volume</b> below 60% to avoid damaging your ears.", "ear", Color3.fromRGB(255, 100, 100), false)
-MiscTab:CreateDivider()
-MiscTab:CreateSection("Information")
-
-MiscTab:CreateParagraph({
-	Title = " <font transparency='0.6'>- //</font> <b>How to use RayBeats</b>",
-	Content = [[
-To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.
-
-Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
-
-After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, or <font face='RobotoMono'>.wav</font>. Make sure that each file is properly placed inside your playlist folder.
-
-When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
-})
-
-MiscTab:CreateParagraph({
-	Title = " <font transparency='0.6'>- //</font> <b>RayBeats v".. raybeatsVersion .." Build-".. raybeatsBuild .."</b>",
-	Content = [[
-<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>or FyanDev</font>
-<b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
-<b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
-
-- RayBeats is ]].. raybeatsType ..
-"\n- " .. raybeatsRelease .. " Release"
-})
-
-local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
-task.spawn(function()
-	while runRandomAbilityText do
-		myInfo:Set("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>", 136044480572973, Color3.fromRGB(170, 165, 130))
-		task.wait(1)
-	end
-end)
-
-MiscTab:CreateSection("Other")
-MiscTab:CreateButton({
-	Name = "Subscribe on <b><font color='rgb(255,0,0)'>YouTube</font></b>",
-	Callback = function()
-		setclipboard("https://youtube.com/@fyandeveloper?si=B-HhhsLTq1iGzN8t")
-	end,
-})
-
-MiscTab:CreateButton({
-	Name = "<b><font color='#6E7681'>GitHub</font></b> Documentation",
-	Callback = function()
-		setclipboard("https://github.com/reprenzy-hue/RayBeats")
-	end,
-})
-
-MiscTab:CreateButton({
-	Name = "Send Feedback",
-	Callback = function()
-		setclipboard("https://raybeats.canny.io")
-	end
-})
-
-MiscTab:CreateButton({
-	Name = "Reload RayBeats",
-	Callback = function()
-		isDurationStarted = false
-		runRandomAbilityText = false
-		LayananSwara.AmbientReverb = Enum.ReverbType.NoReverb
-		if RayfieldLibrary then
-			RayfieldLibrary:Destroy()
-		end
-		if currentSound and currentSound.Parent then
-			currentSound:Destroy()
-			currentSound = nil
-		end
-		if bassBoost then
-			bassBoost:Destroy()
-		end
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))()
-	end,
-})
-
-MiscTab:CreateButton({
-	Name = "Destroy RayBeats",
-	Callback = function()
-		isDurationStarted = false
-		runRandomAbilityText = false
-		LayananSwara.AmbientReverb = Enum.ReverbType.NoReverb
-		if RayfieldLibrary then
-			RayfieldLibrary:Destroy()
-		end
-		if currentSound and currentSound.Parent then
-			currentSound:Destroy()
-			currentSound = nil
-		end
-		if bassBoost then
-			bassBoost:Destroy()
-		end
-	end,
-})
-
-if not isfolder("RayBeats") then
-	makefolder("RayBeats")
-	writefile("RayBeats/readme.txt", [[
-========================================
-	 README - RayBeats Track Folder
-========================================
-
-This is the main folder for the RayBeats Music Player.
-
-How to use:
-1. Inside this folder, create subfolders to act as playlists.
- Example:
-	 Pop/
-	 Rock/
-	 Lofi/
-
-2. Put your .mp3 files into those subfolders.
- Example:
-	 RayBeats/Pop/track1.mp3
-	 RayBeats/Pop/track2.mp3
-	 RayBeats/Rock/track1.mp3
-
-3. Re-execute the RayBeats script to load your new tracks.
-
-Enjoy your music!
-]])
-	RayfieldLibrary:Notify({
-		Title = "RayBeats System", 
-		Content = "'RayBeats' folder created. Ready to use.", 
-		Image = "folder-check", 
-		Duration = 6
-	})
 end
 
 local function playTrack(path, soundName, playlistName)
@@ -969,7 +389,6 @@ local function playTrack(path, soundName, playlistName)
 			activePlaylist = "None"
 			nowPlayingLabel:Set("<b>Now Playing</b> None", "play", Color3.fromRGB(42, 65, 70))
 			durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "hourglass", Color3.fromRGB(31, 48, 51))
-			playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
 			allowPlayPauseNotificationError = false
 			playPause:Set(false)
 			task.wait(0.5)
@@ -1073,6 +492,600 @@ local function playTrack(path, soundName, playlistName)
 	currentSound:SetAttribute("EndedConnection", endedConnection)
 end
 
+ControlsTab:CreateButton({
+	Name = "Rewind <b>10s</b>",
+	Callback = function()
+		if currentSound then
+			currentSound.TimePosition = math.max(0, currentSound.TimePosition - 10)
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "You haven't played any tracks yet!",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			startErrorSound()
+		end
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Previous Track",
+	Callback = function()
+		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "You haven't played any tracks yet!",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			startErrorSound()
+			return
+		end
+
+		local currentIndex = playlistIndex[activePlaylist] or 1
+		local prevIndex = currentIndex - 1
+		if prevIndex < 1 then
+			prevIndex = #playlists[activePlaylist]
+		end
+		local prevFile = playlists[activePlaylist][prevIndex]
+		local prevSongName = getFileName(prevFile):gsub("%.[^.]+$", "")
+		playlistIndex[activePlaylist] = prevIndex
+		playTrack(prevFile, prevSongName, activePlaylist)
+	end
+})
+
+playPause = ControlsTab:CreateToggle({
+	Name = "Pause <font transparency='0.6'>/</font> Resume",
+	CurrentValue = false,
+	Callback = function(value)
+		if internalChange then 
+			internalChange = false
+			return
+		end
+
+		if currentSound then
+			if value then
+				currentSound:Resume()
+			else
+				currentSound:Pause()
+			end
+		else
+			if allowPlayPauseNotificationError then
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "You haven't played any tracks yet!",
+					Image = "circle-slash",
+					Duration = 4
+				})
+				startErrorSound()
+				task.wait(0.5)
+				internalChange = true
+				playPause:Set(false)
+			end
+		end
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Next Track",
+	Callback = function()
+		if not activePlaylist or activePlaylist == "None" or not playlists[activePlaylist] or #playlists[activePlaylist] == 0 then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "You haven't played any tracks yet!",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			startErrorSound()
+			return
+		end
+
+		local currentIndex = playlistIndex[activePlaylist] or 1
+		local nextIndex = currentIndex + 1
+		if nextIndex > #playlists[activePlaylist] then
+			nextIndex = 1
+		end
+		local nextFile = playlists[activePlaylist][nextIndex]
+		local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
+		playlistIndex[activePlaylist] = nextIndex
+		playTrack(nextFile, nextSongName, activePlaylist)
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Forward <b>10s</b>",
+	Callback = function()
+		if currentSound then
+			local newPos = currentSound.TimePosition + 10
+			if newPos < currentSound.TimeLength then
+				currentSound.TimePosition = newPos
+			else
+				currentSound.TimePosition = currentSound.TimeLength - 0.1
+			end
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "You haven't played any tracks yet!",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			startErrorSound()
+		end
+	end
+})
+
+ControlsTab:CreateDivider()
+
+ControlsTab:CreateButton({
+	Name = "Stop Track",
+	Callback = function()
+		if currentSound and currentSound.IsPlaying then
+			local endedConnection = currentSound:GetAttribute("EndedConnection")
+			if endedConnection then
+				endedConnection:Disconnect()
+			end
+			currentSound.TimePosition = 0
+			currentSound:Pause()
+			if nowPlayingLabel then
+				nowPlayingLabel:Set("<b>Now Playing</b> None", "play", Color3.fromRGB(42, 65, 70))
+			end
+			if durationLabel then
+				durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "hourglass", Color3.fromRGB(31, 48, 51))
+			end
+			if playlistLabel then
+				playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
+			end
+			activePlaylist = "None"
+			playedTracks = {}
+			playPause:Set(false)
+			currentSound:Destroy()
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "You haven't played any tracks yet!",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			startErrorSound()
+		end
+	end
+})
+
+ControlsTab:CreateDivider()
+
+loopPlaylist = ControlsTab:CreateToggle({
+	Name = "Loop Playlist",
+	CurrentValue = false,
+	Callback = function(value)
+		isPlaylistLooped = value
+		if value then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Playlist loop activated! Will repeat after last track.",
+				Image = "repeat",
+				Duration = 3
+			})
+			if isLooped then
+				loopTrack:Set(false)
+			end
+			if shuffleEnabled then
+				shufflePlaylist:Set(false)
+			end
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Playlist loop deactivated.",
+				Image = "repeat",
+				Duration = 3
+			})
+		end
+	end
+})
+
+loopTrack = ControlsTab:CreateToggle({
+	Name = "Loop Track",
+	CurrentValue = false,
+	Callback = function(value)
+		isLooped = value
+		if currentSound then
+			currentSound.Looped = isLooped
+		end
+		if value then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "The current track will be repeated continuously.",
+				Image = "repeat",
+				Duration = 3
+			})
+			if isPlaylistLooped then
+				loopPlaylist:Set(false)
+			end
+			if shuffleEnabled then
+				shufflePlaylist:Set(false)
+			end
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "The current track will not be repeated again.",
+				Image = "repeat",
+				Duration = 3
+			})
+		end
+	end
+})
+
+shufflePlaylist = ControlsTab:CreateToggle({
+	Name = "Shuffle Playlist",
+	CurrentValue = false,
+	Callback = function(value)
+		shuffleEnabled = value
+		if value then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Shuffle mode activated! Next track will be random.",
+				Image = "shuffle",
+				Duration = 3
+			})
+			if isLooped then
+				loopTrack:Set(false)
+			end
+			if isPlaylistLooped then
+				loopPlaylist:Set(false)
+			end
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Shuffle mode deactivated.",
+				Image = "shuffle",
+				Duration = 3
+			})
+		end
+	end
+})
+
+ControlsTab:CreateSection("Effects")
+
+ControlsTab:CreateToggle({
+	Name = "Track Bass Booster",
+	CurrentValue = false,
+	Callback = function(val)
+		if currentSound then
+			if val then
+				if not bassBoost then
+					bassBoost = Instance.new("EqualizerSoundEffect")
+					bassBoost.Name = "RayBeats Bass Boost"
+					bassBoost.Parent = currentSound
+					bassBoost.LowGain = 8
+					bassBoost.MidGain = 3
+					bassBoost.HighGain = 0
+				end
+			else
+				if bassBoost then
+					bassBoost:Destroy()
+					bassBoost = nil
+				end
+			end
+		end
+	end
+})
+
+local reverbMap = {
+	["NoReverb"] = Enum.ReverbType.NoReverb,
+	["GenericReverb"] = Enum.ReverbType.GenericReverb,
+	["PaddedCell"] = Enum.ReverbType.PaddedCell,
+	["Room"] = Enum.ReverbType.Room,
+	["Bathroom"] = Enum.ReverbType.Bathroom,
+	["LivingRoom"] = Enum.ReverbType.LivingRoom,
+	["StoneRoom"] = Enum.ReverbType.StoneRoom,
+	["Auditorium"] = Enum.ReverbType.Auditorium,
+	["ConcertHall"] = Enum.ReverbType.ConcertHall,
+	["Cave"] = Enum.ReverbType.Cave,
+	["Arena"] = Enum.ReverbType.Arena,
+	["Hangar"] = Enum.ReverbType.Hangar,
+	["CarpettedHallway"] = Enum.ReverbType.CarpettedHallway,
+	["Hallway"] = Enum.ReverbType.Hallway,
+	["StoneCorridor"] = Enum.ReverbType.StoneCorridor,
+	["Alley"] = Enum.ReverbType.Alley,
+	["Forest"] = Enum.ReverbType.Forest,
+	["City"] = Enum.ReverbType.City,
+	["Mountains"] = Enum.ReverbType.Mountains,
+	["Quarry"] = Enum.ReverbType.Quarry,
+	["Plain"] = Enum.ReverbType.Plain,
+	["ParkingLot"] = Enum.ReverbType.ParkingLot,
+	["SewerPipe"] = Enum.ReverbType.SewerPipe,
+	["UnderWater"] = Enum.ReverbType.UnderWater
+}
+
+local globalReverb = ControlsTab:CreateDropdown({
+	Name = "Reverb <font transparency='0.6'>Global</font>",
+	Options = {
+		"NoReverb",
+		"GenericReverb",
+		"PaddedCell",
+		"Room",
+		"Bathroom",
+		"LivingRoom",
+		"StoneRoom",
+		"Auditorium",
+		"ConcertHall",
+		"Cave",
+		"Arena",
+		"Hangar",
+		"CarpettedHallway",
+		"Hallway",
+		"StoneCorridor",
+		"Alley",
+		"Forest",
+		"City",
+		"Mountains",
+		"Quarry",
+		"Plain",
+		"ParkingLot",
+		"SewerPipe",
+		"UnderWater"
+	},
+	CurrentOption = "NoReverb",
+	Callback = function(reverbOption)
+		local selected = reverbOption[1]
+		LayananSwara.AmbientReverb = reverbMap[selected]
+	end
+})
+
+local playbackSpeed = ControlsTab:CreateSlider({
+	Name = "Track Playback Speed",
+	Range = {0, 2},
+	Increment = 0.01,
+	Suffix = "x",
+	CurrentValue = 1,
+	Callback = function(v)
+		local formatted = string.format("%.2f", v)
+		formatted = formatted:gsub("%.?0+$", "")
+		
+		currentSpeed = tonumber(formatted)
+		if currentSound then
+			currentSound.PlaybackSpeed = currentSpeed
+		end
+	end
+})
+
+ControlsTab:CreateSection("Speed Effect")
+
+ControlsTab:CreateButton({
+	Name = "Slow",
+	Callback = function()
+		playbackSpeed:Set(0.91)
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Slower",
+	Callback = function()
+		playbackSpeed:Set(0.87)
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Slowest",
+	Callback = function()
+		playbackSpeed:Set(0.82)
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Nightcore <font transparency='0.6'>Speed Up</font>",
+	Callback = function()
+		playbackSpeed:Set(1.2)
+	end
+})
+
+ControlsTab:CreateDivider()
+
+ControlsTab:CreateButton({
+	Name = "Reset Speed Effect",
+	Callback = function()
+		currentSpeed = 1
+		if currentSound then
+			currentSound.PlaybackSpeed = 1
+		end
+		playbackSpeed:Set(1) 
+	end
+})
+
+ControlsTab:CreateSection("Volume")
+
+local trackVolume = ControlsTab:CreateSlider({
+	Name = "Track Volume",
+	Range = {0, 100},
+	Increment = 1,
+	Suffix = "%",
+	CurrentValue = 100,
+	Callback = function(val)
+		currentSoundVolume = val / 100
+		if currentSound then
+			currentSound.Volume = currentSoundVolume
+		end
+	end
+})
+
+local gameVolume = ControlsTab:CreateSlider({
+	Name = "Game Volume",
+	Range = {0, 100},
+	Increment = 1,
+	Suffix = "%",
+	CurrentValue = 100,
+	Callback = function(val)
+		for _, obj in ipairs(game:GetDescendants()) do
+			if obj:IsA("Sound") and obj ~= currentSound then
+				if val == 100 then
+					obj.Volume = obj:GetAttribute("OriginalVolume") or obj.Volume
+				else
+					if not obj:GetAttribute("OriginalVolume") then
+						obj:SetAttribute("OriginalVolume", obj.Volume)
+					end
+					obj.Volume = (val/100) * (obj:GetAttribute("OriginalVolume") or obj.Volume)
+				end
+			end
+		end
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Reset All Volume",
+	Callback = function()
+		trackVolume:Set(100)
+		gameVolume:Set(100)
+	end
+})
+
+game.DescendantAdded:Connect(function(obj)
+	if obj:IsA("Sound") and obj ~= currentSound then
+		obj:SetAttribute("OriginalVolume", obj.Volume)
+		local val = gameVolume.CurrentValue
+		if val < 100 then
+			obj.Volume = (val/100) * (obj:GetAttribute("OriginalVolume") or obj.Volume)
+		end
+	end
+end)
+
+local MiscTab = Window:CreateTab("Miscellaneous", "ellipsis")
+
+MiscTab:CreateLabel("If you use a headset/headphone, <b>Please lower the volume</b> below 60% to avoid damaging your ears.", "ear", Color3.fromRGB(255, 100, 100), false)
+MiscTab:CreateDivider()
+MiscTab:CreateSection("Information")
+
+MiscTab:CreateParagraph({
+	Title = " <font transparency='0.6'>- //</font> <b>How to use RayBeats</b>",
+	Content = [[
+To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.
+
+Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
+
+After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, <font face='RobotoMono'>.wav</font>, or <font face='RobotoMono'>.flac</font>. Make sure that each file is properly placed inside your playlist folder.
+
+When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
+})
+
+MiscTab:CreateParagraph({
+	Title = " <font transparency='0.6'>- //</font> <b>RayBeats v".. raybeatsVersion .." Build-".. raybeatsBuild .."</b>",
+	Content = [[
+<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>or FyanDev</font>
+<b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
+<b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
+
+- RayBeats is ]].. raybeatsType ..
+"\n- " .. raybeatsRelease .. " Release"
+})
+
+local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
+task.spawn(function()
+	while runRandomAbilityText do
+		myInfo:Set("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>", 136044480572973, Color3.fromRGB(170, 165, 130))
+		task.wait(1)
+	end
+end)
+
+MiscTab:CreateSection("Other")
+MiscTab:CreateButton({
+	Name = "Subscribe on <b><font color='rgb(255,0,0)'>YouTube</font></b>",
+	Callback = function()
+		setclipboard("https://youtube.com/@fyandeveloper?si=B-HhhsLTq1iGzN8t")
+	end
+})
+
+MiscTab:CreateButton({
+	Name = "<b><font color='#6E7681'>GitHub</font></b> Documentation",
+	Callback = function()
+		setclipboard("https://github.com/reprenzy-hue/RayBeats")
+	end
+})
+
+MiscTab:CreateButton({
+	Name = "Send Feedback",
+	Callback = function()
+		setclipboard("https://raybeats.canny.io")
+	end
+})
+
+MiscTab:CreateButton({
+	Name = "Reload RayBeats",
+	Callback = function()
+		isDurationStarted = false
+		runRandomAbilityText = false
+		LayananSwara.AmbientReverb = Enum.ReverbType.NoReverb
+		if RayfieldLibrary then
+			RayfieldLibrary:Destroy()
+		end
+		if currentSound and currentSound.Parent then
+			currentSound:Destroy()
+			currentSound = nil
+		end
+		if bassBoost then
+			bassBoost:Destroy()
+		end
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))()
+	end
+})
+
+MiscTab:CreateButton({
+	Name = "Destroy RayBeats",
+	Callback = function()
+		isDurationStarted = false
+		runRandomAbilityText = false
+		LayananSwara.AmbientReverb = Enum.ReverbType.NoReverb
+		if RayfieldLibrary then
+			RayfieldLibrary:Destroy()
+		end
+		if currentSound and currentSound.Parent then
+			currentSound:Destroy()
+			currentSound = nil
+		end
+		if bassBoost then
+			bassBoost:Destroy()
+		end
+	end
+})
+
+if not isfolder("RayBeats") then
+	makefolder("RayBeats")
+	if isfolder("RayBeats") then
+		RayfieldLibrary:Notify({
+			Title = "RayBeats System", 
+			Content = "'RayBeats' folder created. Ready to use.", 
+			Image = "folder-check", 
+			Duration = 6
+		})
+	end
+end
+
+if not isfile("RayBeats/readme.txt") then
+	writefile("RayBeats/readme.txt", [[
+========================================
+	 README - RayBeats Track Folder
+========================================
+
+This is the main folder for the RayBeats Music Player.
+
+How to use:
+1. Inside this folder, create subfolders to act as playlists.
+ Example:
+	 Pop/
+	 Rock/
+	 Lofi/
+
+2. Put your .mp3 files into those subfolders.
+ Example:
+	 RayBeats/Pop/track1.mp3
+	 RayBeats/Pop/track2.ogg
+	 RayBeats/Rock/track1.wav
+	 RayBeats/Rock/track2.flac
+
+3. Re-execute the RayBeats script to load your new tracks.
+
+Enjoy your music!
+]])
+end
+
 local function sortTracks(files)
 	table.sort(files, function(a, b)
 		local nameA = getFileName(a):gsub("%.mp3$", "")
@@ -1122,7 +1135,7 @@ for _, folder in pairs(listfiles("RayBeats")) do
 
 		local files = {}
 		for _, file in pairs(listfiles(folder)) do
-			if isfile(file) and (file:match("%.mp3$") or file:match("%.ogg$") or file:match("%.wav$")) then
+			if isfile(file) and (file:match("%.mp3$") or file:match("%.ogg$") or file:match("%.wav$") or file:match("%.flac$")) then
 				table.insert(files, file)
 			end
 		end
@@ -1168,6 +1181,9 @@ starterSound:Play()
 starterSound.Ended:Connect(function()
 	starterSound:Destroy()
 end)
+
+-- guys, do yall agree if I delete the part from here till the end? answer in https://raybeats.canny.io
+
 
 --gw terlalu profesional bejirrr🗿🗿 eh iya, btw ge bener bener bocil indo loh
 --yaa umur 12 udah bisa scriptiny, otodidak lah, gw pun awalnya juga bikin script oake bantuan ai🗿
