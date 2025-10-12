@@ -33,18 +33,24 @@ local LayananSwara = game:GetService("SoundService")
 --// Current state / data
 local activePlaylist = "None"
 local bassBoost = nil
+local currentEqualizerSettings = {
+	low = 0,
+	mid = 0,
+	high = 0
+}
 local currentSound = nil
 local currentSoundVolume = 1
 local currentSpeed = 1
 local currentTrackName = "None"
+local equalizerEffect = nil
 
 --// Flags
+local allowPlayPauseNotificationError = true
 local internalChange = false
 local isLooped = false
-local isPlaylistLooped = false
 local isDurationStarted = true
+local isPlaylistLooped = false
 local runRandomAbilityText = true
-local allowPlayPauseNotificationError = true
 local shuffleEnabled = false
 
 --// Playlist data
@@ -53,15 +59,19 @@ local playlistIndex = {}
 local playedTracks = {}
 
 --// Callbacks / Controls
+local equalizer
+local highFreqSlider
+local lowFreqSlider
 local loopPlaylist
 local loopTrack
+local midFreqSlider
 local playPause
 local shufflePlaylist
 
 --// RayBeats System Info
-local raybeatsVersion = "4.6"
-local raybeatsBuild = "2025.10.11"
-local raybeatsRelease = "<b>Stable</b>"
+local raybeatsVersion = "4.7"
+local raybeatsBuild = "2025.10.12"
+local raybeatsRelease = "<b>Beta</b>"
 local raybeatsType = "<b><font color='rgb(34, 139, 34)'>Open Source</font></b>"
 
 local starterSound = Instance.new("Sound")	
@@ -355,6 +365,9 @@ local function playTrack(path, soundName, playlistName)
 		if bassBoost then
 			bassBoost.Parent = workspace
 		end
+		if equalizerEffect then
+			equalizerEffect.Parent = workspace
+		end
 		currentSound:Stop()
 		currentSound:Destroy()
 	end
@@ -403,6 +416,10 @@ local function playTrack(path, soundName, playlistName)
 
 			if bassBoost then
 				bassBoost.Parent = currentSound
+			end
+
+			if equalizerEffect then
+				equalizerEffect.Parent = currentSound
 			end
 
 			currentTrackName = getFileName(path)
@@ -479,6 +496,9 @@ local function playTrack(path, soundName, playlistName)
 					activePlaylist = "None"
 					if bassBoost then
 						bassBoost.Parent = workspace
+					end
+					if equalizerEffect then
+						equalizerEffect.Parent = workspace
 					end
 					if currentSound then
 						currentSound:Destroy()
@@ -746,12 +766,15 @@ shufflePlaylist = ControlsTab:CreateToggle({
 
 ControlsTab:CreateSection("Effects")
 
-ControlsTab:CreateToggle({
+local bassBooster = ControlsTab:CreateToggle({
 	Name = "Track Bass Booster",
 	CurrentValue = false,
 	Callback = function(val)
 		if currentSound then
 			if val then
+				if equalizerEffect or equalizer then
+					equalizer:Set(false)
+				end
 				if not bassBoost then
 					bassBoost = Instance.new("EqualizerSoundEffect")
 					bassBoost.Name = "RayBeats Bass Boost"
@@ -759,6 +782,12 @@ ControlsTab:CreateToggle({
 					bassBoost.LowGain = 8
 					bassBoost.MidGain = 3
 					bassBoost.HighGain = 0
+					RayfieldLibrary:Notify({
+						Title = "RayBeats System",
+						Content = "Bass booster enabled.",
+						Image = "speaker",
+						Duration = 3
+					})
 				end
 			else
 				if bassBoost then
@@ -833,7 +862,7 @@ local globalReverb = ControlsTab:CreateDropdown({
 })
 
 local playbackSpeed = ControlsTab:CreateSlider({
-	Name = "Track Playback Speed",
+	Name = "Track Speed",
 	Range = {0, 2},
 	Increment = 0.01,
 	Suffix = "x",
@@ -889,6 +918,114 @@ ControlsTab:CreateButton({
 			currentSound.PlaybackSpeed = 1
 		end
 		playbackSpeed:Set(1) 
+	end
+})
+
+ControlsTab:CreateSection("Equalizer")
+
+equalizer = ControlsTab:CreateToggle({
+	Name = "Enable Equalizer",
+	CurrentValue = false,
+	Callback = function(val)
+		if currentSound then
+			if val then
+				if bassBoost then
+					bassBooster:Set(false)
+				end
+				if not equalizerEffect then
+					equalizerEffect = Instance.new("EqualizerSoundEffect")
+					equalizerEffect.Name = "RayBeats Equalizer"
+					equalizerEffect.Parent = currentSound
+					equalizerEffect.LowGain = currentEqualizerSettings.low
+					equalizerEffect.MidGain = currentEqualizerSettings.mid
+					equalizerEffect.HighGain = currentEqualizerSettings.high
+					RayfieldLibrary:Notify({
+						Title = "RayBeats System",
+						Content = "Equalizer enabled. Adjust sliders to customize sound.",
+						Image = "sliders",
+						Duration = 3
+					})
+				end
+			else
+				if equalizerEffect then
+					equalizerEffect:Destroy()
+					equalizerEffect = nil
+					RayfieldLibrary:Notify({
+						Title = "RayBeats System",
+						Content = "Equalizer disabled.",
+						Image = "sliders",
+						Duration = 3
+					})
+				end
+			end
+		end
+	end
+})
+
+
+
+ControlsTab:CreateButton({
+	Name = "Reset Equalizer",
+	Callback = function()
+		equalizerEffect.LowGain = 0
+		equalizerEffect.MidGain = 0
+		equalizerEffect.HighGain = 0
+		currentEqualizerSettings.low = 0
+		currentEqualizerSettings.mid = 0
+		currentEqualizerSettings.high = 0
+		lowFreqSlider:Set(1)
+		midFreqSlider:Set(1)
+		highFreqSlider:Set(1)
+		RayfieldLibrary:Notify({
+			Title = "RayBeats System",
+			Content = "Equalizer settings reset to default.",
+			Image = "refresh-cw",
+			Duration = 3
+		})
+	end
+})
+
+ControlsTab:CreateDivider()
+
+lowFreqSlider = ControlsTab:CreateSlider({
+	Name = "Low Frequencies",
+	Range = {-30, 30},
+	Increment = 0.1,
+	Suffix = "dB",
+	CurrentValue = 1,
+	Callback = function(value)
+		currentEqualizerSettings.low = value
+		if equalizerEffect and currentSound then
+			equalizerEffect.LowGain = value
+		end
+	end
+})
+
+midFreqSlider = ControlsTab:CreateSlider({
+	Name = "Mid Frequencies",
+	Range = {-30, 30},
+	Increment = 0.1,
+	Suffix = "dB",
+	CurrentValue = 1,
+	Callback = function(value)
+		currentEqualizerSettings.mid = value
+		if equalizerEffect and currentSound then
+			equalizerEffect.MidGain = value
+		end
+	end
+})
+
+highFreqSlider = ControlsTab:CreateSlider({
+	Name = "High Frequencies",
+	Range = {-30, 30},
+	Increment = 0.1,
+	Suffix = "dB",
+	CurrentValue = 1,
+	Callback = function(value)
+		currentEqualizerSettings.high = value
+		if equalizerEffect and currentSound then
+			equalizerEffect.HighGain = value
+		end
 	end
 })
 
@@ -1023,6 +1160,9 @@ MiscTab:CreateButton({
 		if bassBoost then
 			bassBoost:Destroy()
 		end
+		if equalizer then
+			equalizerEffect:Destroy()
+		end
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))()
 	end
 })
@@ -1043,8 +1183,37 @@ MiscTab:CreateButton({
 		if bassBoost then
 			bassBoost:Destroy()
 		end
+		if equalizer then
+			equalizerEffect:Destroy()
+		end
 	end
 })
+
+if game.Players.LocalPlayer.UserId == 5349151666 then --dev only
+	MiscTab:CreateSection("Developer Options")
+
+	MiscTab:CreateInput({
+		Name = "Sound Parent",
+		CurrentValue = "",
+		PlaceholderText = "path...",
+		RemoveTextAfterFocusLost = false,
+		Callback = function(output)
+			local target = loadstring("return " .. output)()
+			if typeof(target) == "Instance" then
+				currentSound.Parent = target
+			end
+		end
+	})
+
+	MiscTab:CreateButton({
+		Name = "Open Console",
+		Callback = function()
+			keypress(Enum.KeyCode.F9)
+			task.wait(0.1)
+			keyrelease(Enum.KeyCode.F9)
+		end
+	})
+end
 
 if not isfolder("RayBeats") then
 	makefolder("RayBeats")
