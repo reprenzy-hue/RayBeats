@@ -13,7 +13,7 @@
 --// This project is open for learning and contribution purposes only.
 --// Provided "as is" without any warranty or guarantee of functionality.
 --//
---// RayBeats © 2025 Fyan. All rights reserved.
+--// RayBeats © 2025 FynLabs. All rights reserved.
 
 --// Once again, This is NOT an AI-generated script, Indentation like this '	' used to make it more minimalist and professional.
 
@@ -1106,7 +1106,7 @@ When everything is ready, simply click the <b>Reload RayBeats</b> button below. 
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>RayBeats v".. raybeatsVersion .." Build-".. raybeatsBuild .."</b>",
 	Content = [[
-<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>or FyanDev</font>
+<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>or FynLabs</font>
 <b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
 <b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
 
@@ -1114,10 +1114,10 @@ MiscTab:CreateParagraph({
 "\n- " .. raybeatsRelease .. " Release"
 })
 
-local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
+local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, Owner of <b>FynLabs</b>, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
 task.spawn(function()
 	while runRandomAbilityText do
-		myInfo:Set("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>", 136044480572973, Color3.fromRGB(170, 165, 130))
+		myInfo:Set("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, Owner of <b>FynLabs</b>, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The <b>" .. Ability[math.random(1, #Ability)] .. "</b>", 136044480572973, Color3.fromRGB(170, 165, 130))
 		task.wait(1)
 	end
 end)
