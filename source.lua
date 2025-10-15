@@ -21,12 +21,12 @@
 --// Initial Library
 local RayfieldLibrary
 local bisa_gak = pcall(function()
-	RayfieldLibrary = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+	RayfieldLibrary = loadstring(game:HttpGet([[https://sirius.menu/rayfield]]))()
 end)
 
 --// Unsuccess Library Load Warn
 if not bisa_gak or not RayfieldLibrary then
-	loadstring(game:HttpGet("https://glot.io/snippets/hbwzkt8g3s/raw/reloader.lua"))()
+	loadstring(game:HttpGet([[https://glot.io/snippets/hbwzkt8g3s/raw/reloader.lua]]))()
 	return
 end
 
@@ -158,7 +158,7 @@ local StoneCream = { -- my pfp color
 	InputStroke				 	  = Color3.fromRGB(55, 55, 58)
 }
 
-local LoadingTitles = { -- writed by @ytta_waeeeeeee on TikTok
+local LoadingTitles = {
 	"Setting up your music player...",
 	"Preparing your music vibes...",
 	"Loading up the music engine...",
@@ -1201,7 +1201,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 then -- dev only (kuontolllllll
 	MiscTab:CreateInput({
 		Name = "Sound Parent",
 		CurrentValue = "",
-		PlaceholderText = "path...",
+		PlaceholderText = ":-backtonormal",
 		RemoveTextAfterFocusLost = true,
 		Callback = function(output)
 			if output == ":-backtonormal" then
@@ -1218,7 +1218,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 then -- dev only (kuontolllllll
 	MiscTab:CreateInput({
 		Name = "Sound Name",
 		CurrentValue = "",
-		PlaceholderText = "name...",
+		PlaceholderText = ":-backtonormal",
 		RemoveTextAfterFocusLost = false,
 		Callback = function(output)
 			if output == ":-backtonormal" then
