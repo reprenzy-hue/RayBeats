@@ -866,7 +866,7 @@ local globalReverb = ControlsTab:CreateDropdown({
 
 local playbackSpeed = ControlsTab:CreateSlider({
 	Name = "Track Speed",
-	Range = {0, 2},
+	Range = {0.15, 3},
 	Increment = 0.01,
 	Suffix = "x",
 	CurrentValue = 1,
@@ -1115,8 +1115,8 @@ MiscTab:CreateParagraph({
 <b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
 <b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
 
-- RayBeats is ]].. raybeatsType ..
-"\n- " .. raybeatsRelease .. " Release"
+<font transparency='0.6'>-</font> RayBeats is ]].. raybeatsType ..
+"\n<font transparency='0.6'>-</font> " .. raybeatsRelease .. " Release"
 })
 
 local myInfo = MiscTab:CreateLabel("<b><font color='rgb(220, 215, 180)'>Fyan</font></b> - <b>12</b> years old, Owner of <b>FynLabs</b>, <b><mark color='#FFFFFF' transparency='0'><font color='#FF0000'>Indo</font></mark><mark color='#FF0000' transparency='0'>nesia</mark></b> 🇮🇩, The...", 136044480572973, Color3.fromRGB(170, 165, 130))
