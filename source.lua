@@ -25,10 +25,116 @@ local bisa_gak = pcall(function()
 end)
 
 --// Unsuccess Library Load Warn
-if not bisa_gak or not RayfieldLibrary then
-	loadstring(game:HttpGet([[https://glot.io/snippets/hbwzkt8g3s/raw/reloader.lua]]))()
-	return
+if bisa_gak or RayfieldLibrary then
+	if not game.CoreGui:FindFirstChild("DONTCANCELSHIT") then
+		--// ditaruh disini biar ga konflik
+
+		local TweenService=game:GetService("TweenService")
+		local udjembs=Instance.new("ScreenGui",game.CoreGui)
+		udjembs.Name='DONTCANCELSHIT'
+		udjembs.ResetOnSpawn=false
+		udjembs.IgnoreGuiInset=true
+		udjembs.ScreenInsets=Enum.ScreenInsets.None
+		udjembs.DisplayOrder=2147483647
+		local jdjwus=Instance.new("Frame",udjembs)
+		jdjwus.Size=UDim2.new(0.5,0,1,0)
+		jdjwus.Position=UDim2.new(0,-600,0,0)
+		jdjwus.Active=true
+		jdjwus.BackgroundTransparency=0
+		jdjwus.BackgroundColor3=Color3.new(0,0,0)
+		jdjwus.BorderSizePixel=0
+		jdjwus.ClipsDescendants=true
+		local gradient=Instance.new("UIGradient",jdjwus)
+		gradient.Color=ColorSequence.new(Color3.new(40,40,40))
+		gradient.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(0.5,0),NumberSequenceKeypoint.new(0.5,0.3),NumberSequenceKeypoint.new(1,1)})
+		gradient.Rotation=0
+		local tahwvajaba=Instance.new("TextLabel",jdjwus)
+		tahwvajaba.RichText=true
+		tahwvajaba.Text='Failed to load Rayfield Library.\nTry clicking the <b>Re-execute</b> button.'
+		tahwvajaba.FontFace=Font.new("rbxasset://fonts/families/GothamSSm.json",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
+		tahwvajaba.TextSize=40
+		tahwvajaba.TextColor3=Color3.new(1,1,1)
+		tahwvajaba.TextXAlignment=Enum.TextXAlignment.Left
+		tahwvajaba.TextYAlignment=Enum.TextYAlignment.Top
+		tahwvajaba.Size=UDim2.new(1,-40,0,150)
+		tahwvajaba.TextScaled=true
+		tahwvajaba.Transparency = 0.2
+		tahwvajaba.Position=UDim2.new(0,-600,0,20)
+		tahwvajaba.BackgroundTransparency=1
+		local eardwco=Instance.new("TextButton",jdjwus)
+		eardwco.Text="Cancel"
+		eardwco.FontFace=Font.new("rbxasset://fonts/families/GothamSSm.json",Enum.FontWeight.Regular,Enum.FontStyle.Normal)
+		eardwco.TextSize=20
+		eardwco.TextColor3=Color3.new(1,1,1)
+		eardwco.Size=UDim2.new(0,120,0,45)
+		eardwco.Transparency = 0.2
+		eardwco.Position=UDim2.new(0,-600,1,-65)
+		eardwco.BackgroundColor3=Color3.fromRGB(80,80,80)
+		eardwco.AutoButtonColor=false
+		Instance.new("UICorner",eardwco).CornerRadius=UDim.new(0,16)
+		local eardwcoStroke=Instance.new("UIStroke",eardwco)
+		eardwcoStroke.Thickness=2
+		eardwcoStroke.Transparency = 0.4
+		eardwcoStroke.Color=Color3.fromRGB(220,220,220)
+		eardwcoStroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
+		local twibsn=Instance.new("TextButton",jdjwus)
+		twibsn.Text="Re-execute"
+		twibsn.FontFace=Font.new("rbxasset://fonts/families/GothamSSm.json",Enum.FontWeight.Regular,Enum.FontStyle.Normal)
+		twibsn.TextSize=20
+		twibsn.TextColor3=Color3.new(1,1,1)
+		twibsn.Size=UDim2.new(0,120,0,45)
+		twibsn.Transparency = 0.2
+		twibsn.Position=UDim2.new(0,-600,1,-65)
+		twibsn.BackgroundColor3=Color3.fromRGB(100,100,100)
+		twibsn.AutoButtonColor=false
+		Instance.new("UICorner",twibsn).CornerRadius=UDim.new(0,16)
+		local twibsnStroke=Instance.new("UIStroke",twibsn)
+		twibsnStroke.Thickness=2
+		twibsnStroke.Transparency = 0.4
+		twibsnStroke.Color=Color3.fromRGB(255,255,255)
+		twibsnStroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
+		TweenService:Create(jdjwus,TweenInfo.new(1.6,Enum.EasingStyle.Exponential,Enum.EasingDirection.InOut),{Position=UDim2.new(0,0,0,0)}):Play()
+		TweenService:Create(tahwvajaba,TweenInfo.new(2,Enum.EasingStyle.Exponential),{Position=UDim2.new(0,20,0,50)}):Play()
+		TweenService:Create(eardwco,TweenInfo.new(2,Enum.EasingStyle.Exponential),{Position=UDim2.new(0,20,1,-65)}):Play()
+		TweenService:Create(twibsn,TweenInfo.new(2,Enum.EasingStyle.Exponential),{Position=UDim2.new(0,160,1,-65)}):Play()
+		local function adjustColor(c,offset)
+		return Color3.fromRGB(math.clamp(c.R * 255+offset,0,255),math.clamp(c.G * 255+offset,0,255),math.clamp(c.B * 255+offset,0,255)) end
+		eardwco.MouseEnter:Connect(function()
+		TweenService:Create(eardwcoStroke,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{Thickness=0.3}):Play()
+		TweenService:Create(eardwco,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{BackgroundColor3=adjustColor(eardwco.BackgroundColor3,40)}):Play()
+		TweenService:Create(eardwco,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{TextSize=18}):Play() end)
+		eardwco.MouseLeave:Connect(function()
+		TweenService:Create(eardwcoStroke,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{Thickness=2}):Play()
+		TweenService:Create(eardwco,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{BackgroundColor3=adjustColor(eardwco.BackgroundColor3,-40)}):Play()
+		TweenService:Create(eardwco,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{TextSize=20}):Play() end)
+		twibsn.MouseEnter:Connect(function()
+		TweenService:Create(twibsnStroke,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{Thickness=0.3}):Play()
+		TweenService:Create(twibsn,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{BackgroundColor3=adjustColor(twibsn.BackgroundColor3,40)}):Play()
+		TweenService:Create(twibsn,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{TextSize=18}):Play() end)
+		twibsn.MouseLeave:Connect(function()
+		TweenService:Create(twibsnStroke,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{Thickness=2}):Play()
+		TweenService:Create(twibsn,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{BackgroundColor3=adjustColor(twibsn.BackgroundColor3,-40)}):Play()
+		TweenService:Create(twibsn,TweenInfo.new(0.6,Enum.EasingStyle.Quint),{TextSize=20}):Play() end)
+		eardwco.MouseButton1Click:Connect(function()
+		TweenService:Create(jdjwus,TweenInfo.new(0.4),{Position=UDim2.new(0,-600,0,0),BackgroundTransparency=1}):Play()
+		wait(0.4)
+		udjembs:Destroy() end)
+		twibsn.MouseButton1Click:Connect(function()
+		TweenService:Create(jdjwus,TweenInfo.new(0.4),{Position=UDim2.new(0,-600,0,0),BackgroundTransparency=1}):Play()
+		wait(0.4)
+		udjembs:Destroy()
+		getgenv().RAYFIELDFAILEDLOADED = false
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))() end)
+		if isfile("rayfield/error.mp3") then Instance.new("Sound",gethui()).SoundId=getcustomasset("rayfield/error.mp3"):Play() end
+		return nil
+	else
+		return
+	end
 end
+
+--// Anti-duplicate System
+if getgenv().isRayBeatsLoaded then return end
+getgenv().isRayBeatsLoaded = true
 
 --// Services
 local soundService = game:GetService("SoundService")
@@ -41,6 +147,7 @@ local currentSound = nil
 local currentSoundVolume = 1
 local currentSpeed = 1
 local currentTrackName = "None"
+local devsOptions = { name = "Sound", parent = game.SoundService, group = nil }
 local equalizerEffect = nil
 local lastPosition = 0
 
@@ -50,6 +157,7 @@ local debuggingFlags = false
 local internalChange = false
 local isLooped = false
 local isDurationStarted = true
+local isDevsOptionsEnabled = false or nil
 local isPlaylistLooped = false
 local runRandomAbilityText = true
 local shuffleEnabled = false
@@ -68,10 +176,13 @@ local loopTrack
 local midFreqSlider
 local playPause
 local shufflePlaylist
+local soundGroup
+local soundName
+local soundParent
 
 --// RayBeats System Info
-local raybeatsVersion = "4.8"
-local raybeatsBuild = "2025.10.15" --> Updated in Wednesday, 15 October, 2025 - 11.22.56 PM | Auto-generated by FyanEditor
+local raybeatsVersion = "4.9"
+local raybeatsBuild = "2025.10.21" --> Updated in Wednesday, 21 October, 2025 - 05.13.46 PM | Auto-generated by FyanEditor
 local raybeatsRelease = "<b>Stable</b>"
 local raybeatsType = "<b><font color='rgb(34, 139, 34)'>Open Source</font></b>"
 
@@ -320,7 +431,7 @@ local Ability = {
 	"UI Designer"
 }
 
-local Window = RayfieldLibrary:CreateWindow({
+local RayBeatsWindow = RayfieldLibrary:CreateWindow({
 	Name = "RayBeats",
 	LoadingTitle = LoadingTitles[math.random(1, #LoadingTitles)],
 	LoadingSubtitle = "Initializing RayBeats System",
@@ -334,7 +445,7 @@ local Window = RayfieldLibrary:CreateWindow({
 	KeySystem = false
 })
 
-local ControlsTab = Window:CreateTab("Controls", "settings-2")
+local ControlsTab = RayBeatsWindow:CreateTab("Controls", "settings-2")
 
 ControlsTab:CreateSection("Track Info")
 
@@ -381,6 +492,12 @@ local function playTrack(path, soundName, playlistName)
 	currentSound.Volume = currentSoundVolume
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
+
+	if isDevsOptionsEnabled then
+		currentSound.Parent = devsOptions.parent
+		currentSound.Name = devsOptions.name or "RayBeats // " .. soundName
+		currentSound.SoundGroup = devsOptions.group
+	end
 
 	task.spawn(function()
 		local loaded = false
@@ -970,9 +1087,11 @@ equalizer = ControlsTab:CreateToggle({
 ControlsTab:CreateButton({
 	Name = "Reset Equalizer",
 	Callback = function()
-		equalizerEffect.LowGain = 0
-		equalizerEffect.MidGain = 0
-		equalizerEffect.HighGain = 0
+		if equalizerEffect then
+			equalizerEffect.LowGain = 0
+			equalizerEffect.MidGain = 0
+			equalizerEffect.HighGain = 0
+		end
 		currentEqualizerSettings.low = 0
 		currentEqualizerSettings.mid = 0
 		currentEqualizerSettings.high = 0
@@ -991,7 +1110,7 @@ ControlsTab:CreateButton({
 ControlsTab:CreateDivider()
 
 lowFreqSlider = ControlsTab:CreateSlider({
-	Name = "Low Frequencies",
+	Name = "Low Frequencies <font transparency='0.6'>Bass</font>",
 	Range = {-30, 30},
 	Increment = 0.1,
 	Suffix = "dB",
@@ -1005,7 +1124,7 @@ lowFreqSlider = ControlsTab:CreateSlider({
 })
 
 midFreqSlider = ControlsTab:CreateSlider({
-	Name = "Mid Frequencies",
+	Name = "Mid Frequencies <font transparency='0.6'>Mid</font>",
 	Range = {-30, 30},
 	Increment = 0.1,
 	Suffix = "dB",
@@ -1019,7 +1138,7 @@ midFreqSlider = ControlsTab:CreateSlider({
 })
 
 highFreqSlider = ControlsTab:CreateSlider({
-	Name = "High Frequencies",
+	Name = "High Frequencies <font transparency='0.6'>Treble</font>",
 	Range = {-30, 30},
 	Increment = 0.1,
 	Suffix = "dB",
@@ -1090,7 +1209,7 @@ game.DescendantAdded:Connect(function(obj)
 	end
 end)
 
-local MiscTab = Window:CreateTab("Miscellaneous", "ellipsis")
+local MiscTab = RayBeatsWindow:CreateTab("Miscellaneous", "ellipsis")
 
 MiscTab:CreateLabel("If you use a headset/headphone, <b>Please lower the volume</b> below 60% to avoid damaging your ears.", "ear", Color3.fromRGB(255, 100, 100), false)
 MiscTab:CreateDivider()
@@ -1101,7 +1220,7 @@ MiscTab:CreateParagraph({
 	Content = [[
 To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.
 
-Once you’ve located the workspace, look for a folder named ‘RayBeats’. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
+Once you have located the workspace, look for a folder named <b>RayBeats</b>. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
 
 After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, <font face='RobotoMono'>.wav</font>, or <font face='RobotoMono'>.flac</font>. Make sure that each file is properly placed inside your playlist folder.
 
@@ -1137,7 +1256,7 @@ MiscTab:CreateButton({
 })
 
 MiscTab:CreateButton({
-	Name = "<b><font color='#6E7681'>GitHub</font></b> Documentation",
+	Name = "<b><font color='#6E7681'>GitHub</font></b> Documentation <font transparency='0.6'>temporarily useless</font>",
 	Callback = function()
 		setclipboard("https://github.com/reprenzy-hue/RayBeats")
 	end
@@ -1195,10 +1314,20 @@ MiscTab:CreateButton({
 	end
 })
 
-if game.Players.LocalPlayer.UserId == 5349151666 then -- dev only (kuontolllllll😰😱🙄🤓😂😈😁🤭😹🤪🤪🥵🤑)
+if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then -- dev only, btw you can edit it (kuontolllllll😰😱🙄🤓😂😈😁🤭😹🤪🤪🥵🤑)
 	MiscTab:CreateSection("Developer Options")
 
 	MiscTab:CreateInput({
+		Name = "Playground Input",
+		CurrentValue = "",
+		PlaceholderText = "insert text here...",
+		RemoveTextAfterFocusLost = false,
+		Callback = function(outputPlayground)
+			print(outputPlayground)
+		end
+	})
+
+	soundParent = MiscTab:CreateInput({
 		Name = "Sound Parent",
 		CurrentValue = "",
 		PlaceholderText = ":-backtonormal",
@@ -1210,22 +1339,50 @@ if game.Players.LocalPlayer.UserId == 5349151666 then -- dev only (kuontolllllll
 				local target = loadstring("return " .. output)()
 				if typeof(target) == "Instance" then
 					currentSound.Parent = target
+					devsOptions.parent = target
 				end
 			end
 		end
 	})
 
-	MiscTab:CreateInput({
+	soundName = MiscTab:CreateInput({
 		Name = "Sound Name",
 		CurrentValue = "",
 		PlaceholderText = ":-backtonormal",
 		RemoveTextAfterFocusLost = false,
 		Callback = function(output)
 			if output == ":-backtonormal" then
-				currentSound.Name = "edited_sound_".. math.random(0, 9999)
+				currentSound.Name = "RayBeats // ".. currentTrackName
 			else
 				currentSound.Name = output
+				devsOptions.name = output
 			end
+		end
+	})
+
+	soundGroup = MiscTab:CreateInput({
+		Name = "Sound Group",
+		CurrentValue = "",
+		PlaceholderText = ":-backtonormal",
+		RemoveTextAfterFocusLost = true,
+		Callback = function(output)
+			if output == ":-backtonormal" then
+				currentSound.SoundGroup = nil
+			else
+				local target = loadstring("return " .. output)()
+				if typeof(target) == "Instance" then
+					currentSound.SoundGroup = target
+					devsOptions.group = target
+				end
+			end
+		end
+	})
+
+	MiscTab:CreateToggle({
+		Name = "Force Lock Settings",
+		CurrentValue = false,
+		Callback = function(value)
+			isDevsOptionsEnabled = value
 		end
 	})
 
@@ -1239,6 +1396,14 @@ if game.Players.LocalPlayer.UserId == 5349151666 then -- dev only (kuontolllllll
 	})
 
 	MiscTab:CreateButton({
+		Name = "Launch Hexor Explorer",
+		Callback = function()
+			warn("Hexor is an overpower Roblox Explorer for Exploits --")
+			print("This script will coming soon!")
+		end
+	})
+
+	MiscTab:CreateButton({
 		Name = "Set Visibility",
 		Callback = function()
 			local testVar = true
@@ -1246,6 +1411,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 then -- dev only (kuontolllllll
 			RayfieldLibrary:SetVisibility(testVar)
 		end
 	})
+
 	MiscTab:CreateToggle({
 		Name = "Rayfield Debugging",
 		CurrentValue = false,
@@ -1358,7 +1524,7 @@ end
 for _, folder in pairs(listfiles("RayBeats")) do
 	if isfolder(folder) then
 		local tabName = getFileName(folder)
-		local Tab = Window:CreateTab(tabName, "list-music")
+		local Tab = RayBeatsWindow:CreateTab(tabName, "list-music")
 		Tab:CreateSection("All tracks in " .. tabName)
 		playlists[tabName] = {}
 
