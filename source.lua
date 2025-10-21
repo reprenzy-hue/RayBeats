@@ -25,7 +25,7 @@ local bisa_gak = pcall(function()
 end)
 
 --// Unsuccess Library Load Warn
-if bisa_gak or RayfieldLibrary then
+if not bisa_gak or not RayfieldLibrary then
 	if not game.CoreGui:FindFirstChild("DONTCANCELSHIT") then
 		--// ditaruh disini biar ga konflik
 
