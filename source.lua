@@ -1608,7 +1608,7 @@ for _, folder in pairs(listfiles("RayBeats")) do
 			trackButton = Tab:CreateButton({
 				Name = trackName,
 				Callback = function()
-					trackButton:Set(..trackName .. " <b>has been played!</b>")
+					trackButton:Set(trackName .. " <b>has been played!</b>")
 					activePlaylist = tabName
 					playlistIndex[tabName] = buttonIndex
 					playTrack(file, trackName, tabName)
