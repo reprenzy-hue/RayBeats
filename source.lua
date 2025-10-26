@@ -1385,7 +1385,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 		RemoveTextAfterFocusLost = false,
 		Callback = function(output)
 			if output == ":-backtonormal" then
-				currentSound.Name = "RayBeats // ".. currentTrackName
+				currentSound.Name = "RayBeats // ".. currentTrackName:gsub("%.[^.]+$", "")
 			else
 				currentSound.Name = output
 				devsOptions.name = output
