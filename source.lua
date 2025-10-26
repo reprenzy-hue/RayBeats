@@ -21,11 +21,16 @@
 --// Initial Library
 local RayfieldLibrary
 local bisa_gak = pcall(function()
-	RayfieldLibrary = loadstring(game:HttpGet([[https://sirius.menu/rayfield]]))()
+	if getgenv().isRayBeatsLoaded then
+		return
+	else
+		RayfieldLibrary = loadstring(game:HttpGet([[https://sirius.menu/rayfield]]))()
+	end
 end)
 
 --// Unsuccess Library Load Warn
 if not bisa_gak or not RayfieldLibrary then
+	if getgenv().isRayBeatsLoaded then return end
 	if not game.CoreGui:FindFirstChild([[DONTCANCELSHIT]]) then
 		--// ditaruh disini biar ga konflik
 
@@ -123,8 +128,8 @@ if not bisa_gak or not RayfieldLibrary then
 		TweenService:Create(jdjwus,TweenInfo.new(0.4),{Position=UDim2.new(0,-600,0,0),BackgroundTransparency=1}):Play()
 		wait(0.4)
 		udjembs:Destroy()
-		if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then loadfile("fileexec/raybeats.lua") else loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))() end end)
-		if isfile("rayfield/error.mp3") then Instance.new("Sound",gethui()).SoundId=getcustomasset("rayfield/error.mp3"):Play() end
+		if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))() end end)
+		if isfile("rayfield/raybeats asset/raybeats_error.ogg") then Instance.new("Sound",gethui()).SoundId=getcustomasset("rayfield/raybeats asset/raybeats_error.ogg"):Play() end
 		return nil
 	else
 		return nil
@@ -492,7 +497,6 @@ local function playTrack(path, soundName, playlistName)
 	currentSound.Volume = currentSoundVolume
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
-	currentSound.TimePosition = 0
 
 	if isDevsOptionsEnabled then
 		currentSound.Parent = devsOptions.parent
@@ -557,7 +561,6 @@ local function playTrack(path, soundName, playlistName)
 				Image = "play",
 				Duration = 6
 			})
-			playPause:Set(true)
 
 			endedConnection = currentSound.Ended:Connect(function()
 				if isLooped then
@@ -685,9 +688,9 @@ playPause = ControlsTab:CreateToggle({
 		end
 		if currentSound then
 			if value then
-				currentSound:Play()
+				currentSound.Playing = true
 			else
-				currentSound:Pause()
+				currentSound.Playing = false
 			end
 		else
 			if allowPlayPauseNotificationError then
@@ -1300,11 +1303,13 @@ MiscTab:CreateDivider()
 MiscTab:CreateButton({
 	Name = "Reload RayBeats",
 	Callback = function()
+		getgenv().isRayBeatsLoaded = false
 		isDurationStarted = false
 		runRandomAbilityText = false
 		soundService.AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
+			if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))() end -- for developer convenience, we obfuscate the executable code specifically for developers.
 		end
 		if currentSound and currentSound.Parent then
 			currentSound:Destroy()
@@ -1316,16 +1321,13 @@ MiscTab:CreateButton({
 		if equalizer then
 			equalizerEffect:Destroy()
 		end
-		if getgenv().isRayBeatsLoaded then
-			getgenv().isRayBeatsLoaded = false
-		end
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))()
 	end
 })
 
 MiscTab:CreateButton({
 	Name = "Destroy RayBeats",
 	Callback = function()
+		getgenv().isRayBeatsLoaded = false
 		isDurationStarted = false
 		runRandomAbilityText = false
 		soundService.AmbientReverb = Enum.ReverbType.NoReverb
@@ -1341,9 +1343,6 @@ MiscTab:CreateButton({
 		end
 		if equalizer then
 			equalizerEffect:Destroy()
-		end
-		if getgenv().isRayBeatsLoaded then
-			getgenv().isRayBeatsLoaded = false
 		end
 	end
 })
@@ -1440,6 +1439,30 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 			})
 			warn("Hexor is an overpower Roblox Explorer for Exploits --")
 			print("This script will coming soon!")
+		end
+	})
+
+	MiscTab:CreateButton({
+		Name = "Use Public Version",
+		Callback = function()
+			getgenv().isRayBeatsLoaded = false
+			isDurationStarted = false
+			runRandomAbilityText = false
+			soundService.AmbientReverb = Enum.ReverbType.NoReverb
+			if RayfieldLibrary then
+				RayfieldLibrary:Destroy()
+				loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))()
+			end
+			if currentSound and currentSound.Parent then
+				currentSound:Destroy()
+				currentSound = nil
+			end
+			if bassBoost then
+				bassBoost:Destroy()
+			end
+			if equalizer then
+				equalizerEffect:Destroy()
+			end
 		end
 	})
 
@@ -1585,10 +1608,11 @@ for _, folder in pairs(listfiles("RayBeats")) do
 			trackButton = Tab:CreateButton({
 				Name = trackName,
 				Callback = function()
-					trackButton:Set(trackName .. " has been <b>played!</b>")
+					trackButton:Set(..trackName .. " <b>has been played!</b>")
 					activePlaylist = tabName
 					playlistIndex[tabName] = buttonIndex
 					playTrack(file, trackName, tabName)
+					playPause:Set(true)
 					task.wait(0.9)
 					trackButton:Set(trackName)
 				end
