@@ -551,7 +551,7 @@ local function playTrack(path, soundName, playlistName)
 			if playlistLabel then
 				playlistLabel:Set("<b>Active Playlist</b> " .. (playlistName or "None"), "list-video", Color3.fromRGB(20, 31, 33))
 			end
-
+			playPause:Set(true)
 			if currentTime == 0 then
 				RayfieldLibrary:Notify({
 					Title = "Now Playing",
@@ -1507,9 +1507,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 	MiscTab:CreateButton({
 		Name = "Set Visibility",
 		Callback = function()
-			local testVar = true
-			testVar = not testVar
-			RayfieldLibrary:SetVisibility(testVar)
+			RayfieldLibrary:SetVisibility(false)
 		end
 	})
 
@@ -1650,7 +1648,6 @@ for _, folder in pairs(listfiles("RayBeats")) do
 					activePlaylist = tabName
 					playlistIndex[tabName] = buttonIndex
 					playTrack(file, trackName, tabName)
-					playPause:Set(true)
 					task.wait(0.9)
 					trackButton:Set(trackName)
 				end
