@@ -16,7 +16,7 @@
 					RayBeats © 2025 FynLabs. All rights reserved.
 ]]
 
---// Once again, This is NOT an AI-generated script, Indentation like this '	' used to make it more minimalist and professional.
+--// Once again, This is NOT an AI-generated script, Indentation/Whitespace like this '	' used to make it more minimalist and professional.
 
 --// Initial Library
 local RayfieldLibrary
@@ -128,11 +128,11 @@ if not bisa_gak or not RayfieldLibrary then
 		TweenService:Create(jdjwus,TweenInfo.new(0.4),{Position=UDim2.new(0,-600,0,0),BackgroundTransparency=1}):Play()
 		wait(0.4)
 		udjembs:Destroy()
-		if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))() end end)
+		if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))() end end)
 		if isfile("rayfield/raybeats asset/raybeats_error.ogg") then Instance.new("Sound",gethui()).SoundId=getcustomasset("rayfield/raybeats asset/raybeats_error.ogg"):Play() end
-		return nil
+		return
 	else
-		return nil
+		return
 	end
 end
 
@@ -151,7 +151,8 @@ local currentSound = nil
 local currentSoundVolume = 1
 local currentSpeed = 1
 local currentTrackName = "None"
-local devsOptions = { name = "RayBeats // ".. currentTrackName or "(Unavaliable)", parent = game.SoundService, group = nil }
+local currentTime = 0
+local devsOptions = { name = "RayBeats // ".. (currentTrackName:gsub("%.[^.]+$", "") or "(Unavaliable)"), parent = game.SoundService, group = nil }
 local equalizerEffect = nil
 
 --// Flags
@@ -497,26 +498,22 @@ local function playTrack(path, soundName, playlistName)
 	currentSound.Volume = currentSoundVolume
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
+	currentTime = 0
 
 	if isDevsOptionsEnabled then
 		currentSound.Parent = devsOptions.parent
-		currentSound.Name = devsOptions.name or "RayBeats // " .. soundName
+		currentSound.Name = devsOptions.name or "RayBeats // " .. soundName:gsub("%.[^.]+$", "")
 		currentSound.SoundGroup = devsOptions.group
 	end
 
 	task.spawn(function()
 		local loaded = false
-
-		currentSound.Loaded:Connect(function()
-			loaded = true
-		end)
-
+		currentSound.Loaded:Connect(function() loaded = true end)
 		task.wait(8)
-
 		if currentSound and not loaded then
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "Something went wrong while playing this track. Please convert this track to the listed file format or try again.",
+				Content = "Failed to load track. Please try again or convert this track to a supported format.",
 				Image = "file-x",
 				Duration = 5
 			})
@@ -555,12 +552,14 @@ local function playTrack(path, soundName, playlistName)
 				playlistLabel:Set("<b>Active Playlist</b> " .. (playlistName or "None"), "list-video", Color3.fromRGB(20, 31, 33))
 			end
 
-			RayfieldLibrary:Notify({
-				Title = "Now Playing",
-				Content = currentTrackName:gsub("%.[^.]+$", ""),
-				Image = "play",
-				Duration = 6
-			})
+			if currentTime == 0 then
+				RayfieldLibrary:Notify({
+					Title = "Now Playing",
+					Content = currentTrackName:gsub("%.[^.]+$", ""),
+					Image = "play",
+					Duration = 6
+				})
+			end
 
 			endedConnection = currentSound.Ended:Connect(function()
 				if isLooped then
@@ -640,6 +639,7 @@ ControlsTab:CreateButton({
 	Callback = function()
 		if currentSound then
 			currentSound.TimePosition = math.max(0, currentSound.TimePosition - 10)
+			currentTime = currentSound.TimePosition - 10
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -682,17 +682,20 @@ playPause = ControlsTab:CreateToggle({
 	Name = "Pause <font transparency='0.6'>/</font> Resume",
 	CurrentValue = false,
 	Callback = function(value)
-		if internalChange then 
+		if internalChange then
 			internalChange = false
 			return
 		end
 		if currentSound then
 			if value then
 				currentSound.Playing = true
+				currentSound.TimePosition = currentTime
 			else
 				currentSound.Playing = false
+				currentTime = currentSound.TimePosition
 			end
 		else
+			currentTime = 0
 			if allowPlayPauseNotificationError then
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
@@ -740,6 +743,7 @@ ControlsTab:CreateButton({
 	Callback = function()
 		if currentSound then
 			local newPos = currentSound.TimePosition + 10
+			currentTime = currentSound.TimePosition + 10
 			if newPos < currentSound.TimeLength then
 				currentSound.TimePosition = newPos
 			else
@@ -778,10 +782,29 @@ ControlsTab:CreateButton({
 			if playlistLabel then
 				playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
 			end
+			currentTime = 0
 			activePlaylist = "None"
 			playedTracks = {}
 			playPause:Set(false)
 			currentSound:Destroy()
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "You haven't played any tracks yet!",
+				Image = "circle-slash",
+				Duration = 4
+			})
+			playSFX("RayBeats_Error.ogg")
+		end
+	end
+})
+
+ControlsTab:CreateButton({
+	Name = "Reset Track",
+	Callback = function()
+		if currentSound then
+			currentSound.TimePosition = 0
+			currentTime = 0
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -1309,7 +1332,7 @@ MiscTab:CreateButton({
 		soundService.AmbientReverb = Enum.ReverbType.NoReverb
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
-			if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))() end -- for developer convenience, we obfuscate the executable code specifically for developers.
+			if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))() end -- for developer convenience, we obfuscate the executable code specifically for developers.
 		end
 		if currentSound and currentSound.Parent then
 			currentSound:Destroy()
@@ -1348,6 +1371,7 @@ MiscTab:CreateButton({
 })
 
 if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then -- dev only, btw you can edit it (kuontolllllll😰😱🙄🤓😂😈😁🤭😹🤪🤪🥵🤑)
+	local lockSoundSettings
 	MiscTab:CreateSection("Developer Options")
 
 	MiscTab:CreateInput({
@@ -1382,7 +1406,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 		Name = "Sound Name",
 		CurrentValue = "",
 		PlaceholderText = ":-backtonormal",
-		RemoveTextAfterFocusLost = false,
+		RemoveTextAfterFocusLost = true,
 		Callback = function(output)
 			if output == ":-backtonormal" then
 				currentSound.Name = "RayBeats // ".. currentTrackName:gsub("%.[^.]+$", "")
@@ -1411,7 +1435,21 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 		end
 	})
 
-	MiscTab:CreateToggle({
+	MiscTab:CreateButton({
+		Name = "Reset Sound Settings",
+		Callback = function()
+			devsOptions = { name = "RayBeats // ".. (currentTrackName:gsub("%.[^.]+$", "") or "(Unavaliable)"), parent = game.SoundService, group = nil }
+			if currentSound then
+				currentSound.Parent = soundService
+				currentSound.Name = "RayBeats // " .. soundName:gsub("%.[^.]+$", "")
+				currentSound.SoundGroup = nil
+				lockSoundSettings:Set(false)
+			end
+		end
+	})
+
+
+	lockSoundSettings = MiscTab:CreateToggle({
 		Name = "Lock Sound Settings",
 		CurrentValue = false,
 		Callback = function(value)
@@ -1451,7 +1489,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 			soundService.AmbientReverb = Enum.ReverbType.NoReverb
 			if RayfieldLibrary then
 				RayfieldLibrary:Destroy()
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua'))()
+				loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))()
 			end
 			if currentSound and currentSound.Parent then
 				currentSound:Destroy()
@@ -1645,17 +1683,9 @@ end)
 	yaa umur 12 udah bisa scriptiny, otodidak lah, gw pun awalnya juga bikin script oake bantuan ai🗿
 	gw juga sering dapet nilai 100 di pelajaran b inggris
 	dan modal mt manager cuyyyy😁
-	<font color='rgb(0,0,255)'>btw sound errornya... mwhehehe</font>
 	rayfield support RichText ya? baru tau gw
 	ada yang mau jadi asisten gw ga? tinggal bilang ada di https://raybeats.canny.io (di Feature Requests aja)
 	entod asu, dibilang sok inggris sama orang yang ga bisa bahasa inggris🤭🤭
 ]]
 
-
-
-
-
-
-
-
---jawa jawa jawa😹🤭😁😂😱😰🙄🤓😈
+-- WOW! LUA SANGAT CEPAT DALAM MEMPROSES PERINTAH–itu yang bikin gw suka lua/luau
