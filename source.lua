@@ -404,12 +404,7 @@ local LoadingTitles = {
 }
 
 local Ability = {
-	"Scripter",
-	"Coder",
-	"Programmer",
-	"Developer",
-	"Debugger",
-	"UI Designer"
+	"Scripter", "Coder", "Programmer", "Developer", "Debugger", "UI Designer"
 }
 
 local RayBeatsWindow = RayfieldLibrary:CreateWindow({
@@ -492,9 +487,7 @@ local function playSFX(sfxType)
 	sfx.Looped = false
 	sfx:Play()
 
-	sfx.Ended:Connect(function()
-		sfx:Destroy()
-	end)
+	sfx.Ended:Connect(function() sfx:Destroy() end)
 end
 
 playSFX("RayBeats_Loaded.ogg")
@@ -585,10 +578,6 @@ local function playTrack(path, soundName, playlistName)
 	local endedConnection
 	currentSound.Loaded:Connect(function()
 		if currentSound.IsLoaded then
-			currentSound:Play()
-			if not currentSound.Playing then
-				currentSound.Playing = true
-			end
 			if bassBoost then
 				bassBoost.Parent = currentSound
 			end
@@ -607,9 +596,7 @@ local function playTrack(path, soundName, playlistName)
 			if playlistLabel then
 				playlistLabel:Set("<b>Active Playlist</b> " .. (playlistName or "None"), "list-video", Color3.fromRGB(20, 31, 33))
 			end
-			if not playPause.CurrentValue then
-				playPause:Set(true)
-			end
+			playPause:Set(true)
 			if currentTime == 0 then
 				RayfieldLibrary:Notify({
 					Title = "Now Playing",
@@ -748,9 +735,18 @@ playPause = ControlsTab:CreateToggle({
 			return
 		end
 		if currentSound then
+			local targetVol = value and currentSoundVolume or (currentSoundVolume - 1)
+			if currentFadeOutTween then currentFadeOutTween:Cancel() end
+			if currentFadeInTween then currentFadeInTween:Cancel() end
+			local tween = tweenService:Create(currentSound, soundTweenInfo, {Volume = targetVol})
+			tween:Play()
+			tween.Completed:Wait()
 			if value then
 				currentSound.Playing = true
 				currentSound.TimePosition = currentTime
+				task.wait(0.05)
+				local fadeIn = tweenService:Create(currentSound, soundTweenInfo, {Volume = currentSoundVolume})
+				fadeIn:Play()
 			else
 				currentSound.Playing = false
 				currentTime = currentSound.TimePosition
@@ -849,6 +845,7 @@ ControlsTab:CreateButton({
 			playPause:Set(false)
 			isStopped = true
 			currentSound:Destroy()
+			currentSound = nil
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -1913,3 +1910,6 @@ end)
 ]]
 
 -- WOW! LUA SANGAT CEPAT DALAM MEMPROSES PERINTAH–itu yang bikin gw suka lua/luau
+
+
+-- Commit Message: 'Fixed functions and statements to make them more stable, and added a fade to the playPause toggle'
