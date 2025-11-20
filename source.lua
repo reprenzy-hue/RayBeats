@@ -442,6 +442,19 @@ RayfieldLibrary.Notify = function(self, options)
 		end
 	end)
 
+	task.spawn(function()
+		task.wait(0.1)
+		local notificationVibration = Instance.new("HapticEffect")
+		notificationVibration.Type = Enum.HapticEffectType.GameplayExplosion
+		notificationVibration.Looped = true
+		notificationVibration.Parent = workspace
+
+		notificationVibration:Play()
+		task.wait(0.3) 
+		notificationVibration:Stop()
+		notificationVibration.Ended:Connect(function() notificationVibration:Destroy() end)
+	end)
+
 	if notifySoundFade then
 		local duration = options.Duration or 5
 		if currentSound and currentSound.Parent then
@@ -530,7 +543,7 @@ local function alreadyHasNowPlayingNotification()
 	for _, ui in ipairs(gethui():GetDescendants()) do
 		if ui:IsA("TextLabel") then
 			local txt = ui.Text or ui.ContentText or ""
-			if txt:lower():find("now playing") then
+			if txt:lower():find(currentTrackName) then
 				local p = ui.Parent
 				while p do
 					local n = p.Name:lower()
@@ -580,6 +593,7 @@ local function playTrack(path, soundName, playlistName)
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
 	currentTime = currentSound.TimePosition
+	currentTrackName = soundName
 
 	if isDevsOptionsEnabled then
 		currentSound.Parent = devsOptions.parent
@@ -639,7 +653,6 @@ local function playTrack(path, soundName, playlistName)
 				reverbEffect.Parent = currentSound
 			end
 			isStopped = false
-			currentTrackName = getFileName(path)
 			local name = getFileName(currentSound.SoundId or "<font color='rgb(255, 100, 100)'>Unknown</font>")
 			if nowPlayingLabel then
 				nowPlayingLabel:Set("<b>Now Playing</b> " .. (name or "<font color='rgb(255, 100, 100)'>Unknown</font>"):gsub("%.[^.]+$", ""), "play", Color3.fromRGB(42, 65, 70))
@@ -1547,8 +1560,7 @@ MiscTab:CreateParagraph({
 <b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
 <b>Idea by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
 
-<font transparency='0.6'>-</font> RayBeats is ]].. raybeatsType ..
-"\n<font transparency='0.6'>-</font> " .. raybeatsRelease .. " Release"
+<font transparency='0.6'>-</font> RayBeats is ]].. raybeatsType .."\n<font transparency='0.6'>-</font> " .. raybeatsRelease .. " Release\n<font transparency='0.6'>-</font> The executor currently in use is <b>"..identifyexecutor().."</b>"
 })
 
 MiscTab:CreateDivider()
