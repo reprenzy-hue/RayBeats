@@ -20,7 +20,7 @@
 
 --// Initial Library
 local RayfieldLibrary
-local bisa_gak = pcall(function()
+local libraryLoaded = pcall(function()
 	if getgenv().isRayBeatsLoaded then
 		return
 	else
@@ -29,7 +29,7 @@ local bisa_gak = pcall(function()
 end)
 
 --// Unsuccess Library Load Warn
-if not bisa_gak or not RayfieldLibrary then
+if not libraryLoaded or not RayfieldLibrary then
 	if getgenv().isRayBeatsLoaded then return end
 	if not gethui():FindFirstChild([[DONTCANCELSHIT]]) then
 		--// ditaruh disini biar ga konflik
@@ -199,6 +199,7 @@ local loopTrack
 local midFreqSlider
 local playPause
 local reverbToggle
+local richtextDetector
 local shufflePlaylist
 local soundGroup
 local soundName
@@ -484,6 +485,16 @@ RayfieldLibrary.Notify = function(self, options)
 	return notif
 end
 
+richtextDetector = runService.Heartbeat:Connect(function()
+    for _, obj in ipairs(gethui():GetDescendants()) do
+        if obj:IsA("TextLabel") and obj.Text:find("All tracks in ") then
+            if not obj.RichText then
+                obj.RichText = true
+            end
+        end
+    end
+end)
+
 local function playSFX(sfxType)
 	local fileUrl = "https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/" .. sfxType
 	local playedSfx
@@ -588,6 +599,10 @@ local function playTrack(path, soundName, playlistName)
 		end
 		currentSound:Stop()
 		currentSound:Destroy()
+	end
+
+	if richtextDetector then
+		richtextDetector:Disconnect()
 	end
 
 	currentSound = Instance.new("Sound")
@@ -896,7 +911,7 @@ ControlsTab:CreateDivider()
 ControlsTab:CreateButton({
 	Name = "Stop Track",
 	Callback = function()
-		if currentSound and currentSound.IsPlaying then
+		if currentSound then
 			if endedConnectionGlobal then
 				endedConnectionGlobal:Disconnect()
 				endedConnectionGlobal = nil
@@ -1075,7 +1090,7 @@ shufflePlaylist = ControlsTab:CreateToggle({
 ControlsTab:CreateSection("Effects")
 
 ControlsTab:CreateToggle({
-	Name = "Track Fading <font transparency='0.6'>when the notification is running</font>",
+	Name = "Track Fading <font transparency='0.6'>when notification is running</font>",
 	CurrentValue = true,
 	Callback = function(value)
 		notifySoundFade = value
@@ -1662,6 +1677,9 @@ MiscTab:CreateButton({
 		isDurationStarted = false
 		runRandomAbilityText = false
 		durationConnection:Disconnect()
+		if richtextDetector then
+			richtextDetector:Disconnect()
+		end
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 			if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))() end -- for developer convenience, we obfuscate the executable code specifically for developers.
@@ -1689,6 +1707,9 @@ MiscTab:CreateButton({
 		isDurationStarted = false
 		runRandomAbilityText = false
 		durationConnection:Disconnect()
+		if richtextDetector then
+			richtextDetector:Disconnect()
+		end
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 		end
@@ -1824,6 +1845,9 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 			isDurationStarted = false
 			runRandomAbilityText = false
 			durationConnection:Disconnect()
+			if richtextDetector then
+				richtextDetector:Disconnect()
+			end
 			if RayfieldLibrary then
 				RayfieldLibrary:Destroy()
 				loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))()
@@ -1962,17 +1986,17 @@ end
 
 for _, folder in pairs(listfiles("RayBeats")) do
 	if isfolder(folder) then
-		local tabName = getFileName(folder)
-		local Tab = RayBeatsWindow:CreateTab(tabName, "list-music")
-		Tab:CreateSection("All tracks in " .. tabName)
-		playlists[tabName] = {}
-
 		local files = {}
 		for _, file in pairs(listfiles(folder)) do
 			if isfile(file) and (file:match("%.mp3$") or file:match("%.ogg$") or file:match("%.wav$") or file:match("%.flac$")) then
 				table.insert(files, file)
 			end
 		end
+
+		local tabName = getFileName(folder)
+		local Tab = RayBeatsWindow:CreateTab(tabName, "list-music")
+		Tab:CreateSection("All tracks in <b>" .. tabName .. "</b> <font transparency='0.7'>•</font> Total <b>".. #files .. "</b> files")
+		playlists[tabName] = {}
 
 		files = sortTracks(files)
 
