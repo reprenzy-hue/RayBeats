@@ -157,11 +157,12 @@ local currentSoundVolume = 1
 local currentSpeed = 1
 local currentTrackName = "None"
 local currentTime = 0
-local devsOptions = { name = "RayBeats // ".. (currentTrackName:gsub("%.[^.]+$", "") or "(Unavaliable)"), parent = game.SoundService, group = nil }
+local devsOptions = { name = "RayBeats // ".. (currentTrackName or "(Unavaliable)"), parent = game.SoundService, group = nil }
 local endedConnectionGlobal = nil
 local equalizerEffect = nil
 local fwdRwdDuration = 10
 local notifySoundFade = true
+local notifyVibration = true
 local reverbEffect = nil
 local stringFwdRwd = "10"
 
@@ -188,6 +189,7 @@ local decayTimeSlider
 local densitySlider
 local diffusionSlider
 local dryLevelSlider
+local durationConnection
 local equalizer
 local highFreqSlider
 local lowFreqSlider
@@ -428,7 +430,7 @@ local soundTweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDire
 RayfieldLibrary.Notify = function(self, options)
 	local notif = originalNotify(self, options)
 
-	--// Special Feature : RichText on Rayfield Notify (2 setengah jam gw bikin ini error mulu🥲)
+	--// Special Feature : RichText on Rayfield Notify (2 setengah jam gw bikin ini error mulu🥲 malah ga kepake lagi)
 	task.spawn(function()
 		task.wait(0.00001)
 		local titleTarget = options.Title
@@ -442,18 +444,21 @@ RayfieldLibrary.Notify = function(self, options)
 		end
 	end)
 
-	task.spawn(function()
-		task.wait(0.1)
-		local notificationVibration = Instance.new("HapticEffect")
-		notificationVibration.Type = Enum.HapticEffectType.GameplayExplosion
-		notificationVibration.Looped = true
-		notificationVibration.Parent = workspace
+	if notifyVibration then
+		task.spawn(function()
+			task.wait(0.1)
+			local notificationVibration = Instance.new("HapticEffect")
+			notificationVibration.Name = "RayBeats Haptic"
+			notificationVibration.Type = Enum.HapticEffectType.GameplayExplosion
+			notificationVibration.Looped = true
+			notificationVibration.Parent = workspace
 
-		notificationVibration:Play()
-		task.wait(0.3) 
-		notificationVibration:Stop()
-		notificationVibration.Ended:Connect(function() notificationVibration:Destroy() end)
-	end)
+			notificationVibration:Play()
+			task.wait(0.3) 
+			notificationVibration:Stop()
+			notificationVibration.Ended:Connect(function() notificationVibration:Destroy() end)
+		end)
+	end
 
 	if notifySoundFade then
 		local duration = options.Duration or 5
@@ -603,15 +608,15 @@ local function playTrack(path, soundName, playlistName)
 
 	--// Feature Upgrade : Improved error checking
 	task.spawn(function()
-		local sId = "Failed to load sound ".. currentSound.SoundId
-		local done = false
+		local targetedTrack = "Failed to load sound ".. currentSound.SoundId
+		local isCurrentTrackError = false
 
-		local c
-		c = logService.MessageOut:Connect(function(msg)
-			if done then return end
-			if string.find(msg, sId, 1, true) then
-				done = true
-				c:Disconnect()
+		local errorCheckerConnection
+		errorCheckerConnection = logService.MessageOut:Connect(function(msg)
+			if isCurrentTrackError then return end
+			if string.find(msg, targetedTrack, 1, true) then
+				isCurrentTrackError = true
+				errorCheckerConnection:Disconnect()
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
 					Content = "Failed to load track. Please try again or convert this track to a supported format.",
@@ -636,8 +641,8 @@ local function playTrack(path, soundName, playlistName)
 		end)
 
 		task.wait(3)
-		if not done and c then
-			c:Disconnect()
+		if not isCurrentTrackError and errorCheckerConnection then
+			errorCheckerConnection:Disconnect()
 		end
 	end)
 
@@ -668,7 +673,7 @@ local function playTrack(path, soundName, playlistName)
 					if not alreadyHasNowPlayingNotification() then
 						RayfieldLibrary:Notify({
 							Title = "Now Playing",
-							Content = currentTrackName:gsub("%.[^.]+$", ""),
+							Content = currentTrackName,
 							Image = "play",
 							Duration = 6
 						})
@@ -1068,6 +1073,24 @@ shufflePlaylist = ControlsTab:CreateToggle({
 })
 
 ControlsTab:CreateSection("Effects")
+
+ControlsTab:CreateToggle({
+	Name = "Track Fading <font transparency='0.6'>when the notification is running</font>",
+	CurrentValue = true,
+	Callback = function(value)
+		notifySoundFade = value
+	end
+})
+
+ControlsTab:CreateToggle({
+	Name = "Notification Vibration <font transparency='0.6'>not for all devices</font>",
+	CurrentValue = true,
+	Callback = function(value)
+		notifyVibration = value
+	end
+})
+
+ControlsTab:CreateDivider()
 
 local bassBooster = ControlsTab:CreateToggle({
 	Name = "Track Bass Booster",
@@ -1471,14 +1494,6 @@ decayTimeSlider = ControlsTab:CreateSlider({
 
 ControlsTab:CreateSection("Volume")
 
-ControlsTab:CreateToggle({
-	Name = "Track Fade",
-	CurrentValue = true,
-	Callback = function(value)
-		notifySoundFade = value
-	end
-})
-
 local trackVolume = ControlsTab:CreateSlider({
 	Name = "Track Volume",
 	Range = {0, 100},
@@ -1552,6 +1567,8 @@ After setting up the folder, you can begin importing/inserting your audio files 
 
 When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
 })
+
+MiscTab:CreateSection("Credits")
 
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>RayBeats ".. raybeatsVersion .." Build-".. raybeatsBuild .."</b>",
@@ -1644,6 +1661,7 @@ MiscTab:CreateButton({
 		getgenv().isRayBeatsLoaded = false
 		isDurationStarted = false
 		runRandomAbilityText = false
+		durationConnection:Disconnect()
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 			if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Name == "fian_gaming953" then function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\108','\111','\97','\100','\102','\105','\108','\101','\40','\34','\102','\105','\108','\101','\101','\120','\101','\99','\47','\114','\97','\121','\98','\101','\97','\116','\115','\46','\108','\117','\97','\34','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))() else loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))() end -- for developer convenience, we obfuscate the executable code specifically for developers.
@@ -1670,6 +1688,7 @@ MiscTab:CreateButton({
 		getgenv().isRayBeatsLoaded = false
 		isDurationStarted = false
 		runRandomAbilityText = false
+		durationConnection:Disconnect()
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
 		end
@@ -1727,7 +1746,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 		RemoveTextAfterFocusLost = true,
 		Callback = function(output)
 			if output == ":-backtonormal" then
-				currentSound.Name = "RayBeats // ".. (currentTrackName:gsub("%.[^.]+$", ""))
+				currentSound.Name = "RayBeats // ".. (currentTrackName)
 			else
 				currentSound.Name = output
 				devsOptions.name = output
@@ -1764,10 +1783,10 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 	MiscTab:CreateButton({
 		Name = "Reset Sound Settings",
 		Callback = function()
-			devsOptions = { name = "RayBeats // ".. (currentTrackName:gsub("%.[^.]+$", "") or "(Unavaliable)"), parent = game.SoundService, group = nil }
+			devsOptions = { name = "RayBeats // ".. (currentTrackName or "(Unavaliable)"), parent = game.SoundService, group = nil }
 			if currentSound then
 				currentSound.Parent = soundService
-				currentSound.Name = "RayBeats // " .. (currentTrackName:gsub("%.[^.]+$", ""))
+				currentSound.Name = "RayBeats // " .. currentTrackName
 				currentSound.SoundGroup = nil
 				lockSoundSettings:Set(false)
 			end
@@ -1804,6 +1823,7 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 			getgenv().isRayBeatsLoaded = false
 			isDurationStarted = false
 			runRandomAbilityText = false
+			durationConnection:Disconnect()
 			if RayfieldLibrary then
 				RayfieldLibrary:Destroy()
 				loadstring(game:HttpGet([[https://raw.githubusercontent.com/reprenzy-hue/RayBeats/refs/heads/main/source.lua]]))()
@@ -1989,12 +2009,11 @@ local function updateDurationLabel()
 	end
 end
 
-local connection
-connection = runService.RenderStepped:Connect(function()
+durationConnection = runService.RenderStepped:Connect(function()
 	if isDurationStarted then
 		updateDurationLabel()
 	else
-		connection:Disconnect()
+		durationConnection:Disconnect()
 	end
 end)
 
