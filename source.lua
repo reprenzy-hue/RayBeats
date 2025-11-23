@@ -1629,7 +1629,7 @@ MiscTab:CreateParagraph({
 	Content = [[
 <b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>Owner of FynLabs</font>
 <b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
-<b>Reference by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>
+<b>Reference by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>]]
 })
 
 MiscTab:CreateDivider()
