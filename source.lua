@@ -1619,7 +1619,7 @@ MiscTab:CreateParagraph({
 <font transparency='0.6'>•</font> Adding tweening to Rewind, Forward, Reset, and Stop
 <font transparency='0.6'>•</font> Track time positioning when enabling Play/Resume toggle removed
 
-<font transparency='0.6'>—</font> <i>Updated at <b>23 November 2025, 01:06 PM</b></i>
+<font transparency='0.6'>—</font> <i>Updated at <b>23 November 2025, 01:06 PM</b></i>]]
 })
 
 MiscTab:CreateSection("Credits")
