@@ -156,7 +156,6 @@ local currentSound = nil
 local currentSoundVolume = 1
 local currentSpeed = 1
 local currentTrackName = "None"
-local currentTime = 0
 local devsOptions = { name = "RayBeats // ".. (currentTrackName or "(Unavaliable)"), parent = game.SoundService, group = nil }
 local endedConnectionGlobal = nil
 local equalizerEffect = nil
@@ -416,7 +415,7 @@ local RayBeatsWindow = RayfieldLibrary:CreateWindow({
 	LoadingTitle = LoadingTitles[math.random(1, #LoadingTitles)],
 	LoadingSubtitle = "Initializing RayBeats System",
 	ShowText = "RayBeats",
-	Icon = 93626130496227,
+	Icon = 84750414601269, -- Icon Update!
 	Theme = StoneCream,
 	DisableRayfieldPrompts = true,
 	ToggleUIKeybind = "R",
@@ -426,7 +425,7 @@ local RayBeatsWindow = RayfieldLibrary:CreateWindow({
 })
 
 local originalNotify = RayfieldLibrary.Notify
-local soundTweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+local soundTweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
 RayfieldLibrary.Notify = function(self, options)
 	local notif = originalNotify(self, options)
@@ -555,25 +554,6 @@ local function getFileName(path)
 	return path:match("([^\\/]+)$") or "Unknown"
 end
 
-local function alreadyHasNowPlayingNotification()
-	for _, ui in ipairs(gethui():GetDescendants()) do
-		if ui:IsA("TextLabel") then
-			local txt = ui.Text or ui.ContentText or ""
-			if txt:lower():find(currentTrackName) then
-				local p = ui.Parent
-				while p do
-					local n = p.Name:lower()
-					if n:find("notif") or n:find("notification") then
-						return true
-					end
-					p = p.Parent
-				end
-			end
-		end
-	end
-	return false
-end
-
 local function playTrack(path, soundName, playlistName)
 	if not getcustomasset then
 		RayfieldLibrary:Notify({
@@ -612,7 +592,6 @@ local function playTrack(path, soundName, playlistName)
 	currentSound.Volume = currentSoundVolume
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
-	currentTime = currentSound.TimePosition
 	currentTrackName = soundName
 
 	if isDevsOptionsEnabled then
@@ -669,7 +648,7 @@ local function playTrack(path, soundName, playlistName)
 			if equalizerEffect then
 				equalizerEffect.Parent = currentSound
 			end
-			if reverbToggle.CurrentValue and reverbEffect then
+			if reverbEffect then
 				reverbEffect.Parent = currentSound
 			end
 			isStopped = false
@@ -682,17 +661,14 @@ local function playTrack(path, soundName, playlistName)
 			end
 			playPause:Set(true)
 
-			--// Feature Upgrade : Better Now Playing notifications
 			if not isStopped then
-				if currentTime == 0 then
-					if not alreadyHasNowPlayingNotification() then
-						RayfieldLibrary:Notify({
-							Title = "Now Playing",
-							Content = currentTrackName,
-							Image = "play",
-							Duration = 6
-						})
-					end
+				if currentSound.TimePosition == 0 then
+					RayfieldLibrary:Notify({
+						Title = "Now Playing",
+						Content = currentTrackName,
+						Image = "play",
+						Duration = 6
+					})
 				end
 			end
 
@@ -775,7 +751,7 @@ local rwd = ControlsTab:CreateButton({
 	Name = "Rewind <b>"..stringFwdRwd.."s</b>",
 	Callback = function()
 		if currentSound then
-			currentSound.TimePosition = math.max(0, currentSound.TimePosition - fwdRwdDuration)
+			tweenService:Create(currentSound, soundTweenInfo, {TimePosition = math.max(0, currentSound.TimePosition - fwdRwdDuration)}):Play()
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -823,24 +799,22 @@ playPause = ControlsTab:CreateToggle({
 			return
 		end
 		if currentSound then
-			local targetVol = value and currentSoundVolume or (currentSoundVolume - 1)
 			if currentFadeOutTween then currentFadeOutTween:Cancel() end
 			if currentFadeInTween then currentFadeInTween:Cancel() end
-			local tween = tweenService:Create(currentSound, soundTweenInfo, {Volume = targetVol})
-			tween:Play()
-			tween.Completed:Wait()
 			if value then
 				currentSound.Playing = true
-				currentSound.TimePosition = currentTime
-				task.wait(0.05)
+				currentSound.Volume = 0
 				local fadeIn = tweenService:Create(currentSound, soundTweenInfo, {Volume = currentSoundVolume})
 				fadeIn:Play()
 			else
-				currentSound.Playing = false
-				currentTime = currentSound.TimePosition
+				local fadeOut = tweenService:Create(currentSound, soundTweenInfo, {Volume = 0})
+				fadeOut:Play()
+				fadeOut.Completed:Connect(function()
+					currentSound.Playing = false
+					currentSound.Volume = currentSoundVolume
+				end)
 			end
 		else
-			currentTime = 0
 			if allowPlayPauseNotificationError then
 				RayfieldLibrary:Notify({
 					Title = "RayBeats System",
@@ -888,11 +862,10 @@ local fwd = ControlsTab:CreateButton({
 	Callback = function()
 		if currentSound then
 			local newPos = currentSound.TimePosition + fwdRwdDuration
-			currentTime = currentSound.TimePosition + fwdRwdDuration
 			if newPos < currentSound.TimeLength then
-				currentSound.TimePosition = newPos
+				tweenService:Create(currentSound, soundTweenInfo, {TimePosition = newPos}):Play()
 			else
-				currentSound.TimePosition = currentSound.TimeLength - 0.1
+				tweenService:Create(currentSound, soundTweenInfo, {TimePosition = currentSound.TimeLength - 0.1}):Play()
 			end
 		else
 			RayfieldLibrary:Notify({
@@ -912,12 +885,18 @@ ControlsTab:CreateButton({
 	Name = "Stop Track",
 	Callback = function()
 		if currentSound then
+			local endedTween = tweenService:Create(currentSound, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Volume = 0})
+			endedTween:Play()
+			endedTween.Completed:Connect(function()
+				currentSound.Volume = currentSoundVolume
+				currentSound.TimePosition = 0
+				currentSound:Pause()
+			end)
+			task.wait(0.6)
 			if endedConnectionGlobal then
 				endedConnectionGlobal:Disconnect()
 				endedConnectionGlobal = nil
 			end
-			currentSound.TimePosition = 0
-			currentSound:Pause()
 			if nowPlayingLabel then
 				nowPlayingLabel:Set("<b>Now Playing</b> None", "square", Color3.fromRGB(42, 65, 70))
 			end
@@ -927,13 +906,27 @@ ControlsTab:CreateButton({
 			if playlistLabel then
 				playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
 			end
-			currentTime = 0
+			if bassBoost then
+				bassBoost.Parent = workspace
+			end
+			if equalizerEffect then
+				equalizerEffect.Parent = workspace
+			end
+			if reverbEffect then
+				reverbEffect.Parent = workspace
+			end
 			activePlaylist = "None"
 			playedTracks = {}
 			playPause:Set(false)
 			isStopped = true
 			currentSound:Destroy()
 			currentSound = nil
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "The track has been stopped.",
+				Image = "circle-slash",
+				Duration = 4
+			})
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -981,8 +974,7 @@ ControlsTab:CreateButton({
 	Name = "Reset Track",
 	Callback = function()
 		if currentSound then
-			currentSound.TimePosition = 0
-			currentTime = 0
+			tweenService:Create(currentSound, soundTweenInfo, {TimePosition = 0.00000000000001}):Play()
 		else
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
@@ -1094,6 +1086,21 @@ ControlsTab:CreateToggle({
 	CurrentValue = true,
 	Callback = function(value)
 		notifySoundFade = value
+		if not value then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Annoyed? That's all gone. Now when you get a notification, the track won't fade anymore.",
+				Image = "triangle-right",
+				Duration = 3
+			})
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Now when you get a notification, the track will fade again.",
+				Image = "triangle-right",
+				Duration = 3
+			})
+		end
 	end
 })
 
@@ -1102,39 +1109,57 @@ ControlsTab:CreateToggle({
 	CurrentValue = true,
 	Callback = function(value)
 		notifyVibration = value
+		if value then
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Okay! Now there will be a vibration when there is a notification running.",
+				Image = "vibrate",
+				Duration = 3
+			})
+		else
+			RayfieldLibrary:Notify({
+				Title = "RayBeats System",
+				Content = "Now when there is a notification, no more vibration will come.",
+				Image = "vibrate-off",
+				Duration = 3
+			})
+		end
 	end
 })
 
 ControlsTab:CreateDivider()
 
 local bassBooster = ControlsTab:CreateToggle({
-	Name = "Track Bass Booster",
+	Name = "Bass Booster",
 	CurrentValue = false,
 	Callback = function(val)
-		if currentSound then
-			if val then
-				if equalizerEffect or equalizer then
-					equalizer:Set(false)
+		if val then
+			if equalizerEffect or equalizer then
+				equalizer:Set(false)
+			end
+			if not bassBoost then
+				bassBoost = Instance.new("EqualizerSoundEffect")
+				bassBoost.Name = "RayBeats Bass Boost"
+				bassBoost.Parent = workspace
+				bassBoost.LowGain = 8
+				bassBoost.MidGain = 3
+				bassBoost.HighGain = 0
+				if currentSound then
+					bassBoost.Parent = currentSound
+				else
+					bassBoost.Parent = workspace
 				end
-				if not bassBoost then
-					bassBoost = Instance.new("EqualizerSoundEffect")
-					bassBoost.Name = "RayBeats Bass Boost"
-					bassBoost.Parent = currentSound or workspace
-					bassBoost.LowGain = 8
-					bassBoost.MidGain = 3
-					bassBoost.HighGain = 0
-					RayfieldLibrary:Notify({
-						Title = "RayBeats System",
-						Content = "Bass booster enabled.",
-						Image = "speaker",
-						Duration = 3
-					})
-				end
-			else
-				if bassBoost then
-					bassBoost:Destroy()
-					bassBoost = nil
-				end
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "Bass booster enabled.",
+					Image = "speaker",
+					Duration = 3
+				})
+			end
+		else				
+		if bassBoost then
+			bassBoost:Destroy()
+				bassBoost = nil
 			end
 		end
 	end
@@ -1268,36 +1293,38 @@ equalizer = ControlsTab:CreateToggle({
 	Name = "Enable Equalizer",
 	CurrentValue = false,
 	Callback = function(val)
-		if currentSound then
-			if val then
-				if bassBoost then
-					bassBooster:Set(false)
+		if val then
+			if bassBoost then
+				bassBooster:Set(false)
+			end
+			if not equalizerEffect then
+				equalizerEffect = Instance.new("EqualizerSoundEffect")
+				equalizerEffect.Name = "RayBeats Equalizer"
+				equalizerEffect.LowGain = currentEqualizerSettings.low
+				equalizerEffect.MidGain = currentEqualizerSettings.mid
+				equalizerEffect.HighGain = currentEqualizerSettings.high
+				if currentSound then
+					equalizerEffect.Parent = currentSound
+				else
+					equalizerEffect.Parent = workspace
 				end
-				if not equalizerEffect then
-					equalizerEffect = Instance.new("EqualizerSoundEffect")
-					equalizerEffect.Name = "RayBeats Equalizer"
-					equalizerEffect.Parent = currentSound or workspace
-					equalizerEffect.LowGain = currentEqualizerSettings.low
-					equalizerEffect.MidGain = currentEqualizerSettings.mid
-					equalizerEffect.HighGain = currentEqualizerSettings.high
-					RayfieldLibrary:Notify({
-						Title = "RayBeats System",
-						Content = "Equalizer enabled. Adjust sliders to customize sound.",
-						Image = "sliders",
-						Duration = 3
-					})
-				end
-			else
-				if equalizerEffect then
-					equalizerEffect:Destroy()
-					equalizerEffect = nil
-					RayfieldLibrary:Notify({
-						Title = "RayBeats System",
-						Content = "Equalizer disabled.",
-						Image = "sliders",
-						Duration = 3
-					})
-				end
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "Equalizer enabled. Adjust sliders to customize sound.",
+					Image = "sliders",
+					Duration = 3
+				})
+			end
+		else
+			if equalizerEffect then
+				equalizerEffect:Destroy()
+				equalizerEffect = nil
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "Equalizer disabled.",
+					Image = "sliders",
+					Duration = 3
+				})
 			end
 		end
 	end
@@ -1376,35 +1403,37 @@ reverbToggle = ControlsTab:CreateToggle({
 	Name = "Enable Reverb",
 	CurrentValue = false,
 	Callback = function(val)
-		if currentSound then
-			if val then
-				if not reverbEffect then
-					reverbEffect = Instance.new("ReverbSoundEffect")
-					reverbEffect.Name = "RayBeats Reverb"
-					reverbEffect.Parent = currentSound or workspace
-					reverbEffect.DryLevel = currentReverbSettings.DryLevel
-					reverbEffect.WetLevel = currentReverbSettings.WetLevel
-					reverbEffect.Density = currentReverbSettings.Density
-					reverbEffect.DecayTime = currentReverbSettings.DecayTime
-					reverbEffect.Diffusion = currentReverbSettings.Diffusion
-					RayfieldLibrary:Notify({
-						Title = "RayBeats System",
-						Content = "Reverb enabled. Adjust sliders to shape the echo.",
-						Image = "sofa",
-						Duration = 3
-					})
+		if val then
+			if not reverbEffect then
+				reverbEffect = Instance.new("ReverbSoundEffect")
+				reverbEffect.Name = "RayBeats Reverb"
+				reverbEffect.DryLevel = currentReverbSettings.DryLevel
+				reverbEffect.WetLevel = currentReverbSettings.WetLevel
+				reverbEffect.Density = currentReverbSettings.Density
+				reverbEffect.DecayTime = currentReverbSettings.DecayTime
+				reverbEffect.Diffusion = currentReverbSettings.Diffusion
+				if currentSound then
+					reverbEffect.Parent = currentSound
+				else
+					reverbEffect.Parent = workspace
 				end
-			else
-				if reverbEffect then
-					reverbEffect:Destroy()
-					reverbEffect = nil
-					RayfieldLibrary:Notify({
-						Title = "RayBeats System",
-						Content = "Reverb disabled.",
-						Image = "sofa",
-						Duration = 3
-					})
-				end
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "Reverb enabled. Adjust sliders to shape the echo.",
+					Image = "sofa",
+					Duration = 3
+				})
+			end
+		else
+			if reverbEffect then
+				reverbEffect:Destroy()
+				reverbEffect = nil
+				RayfieldLibrary:Notify({
+					Title = "RayBeats System",
+					Content = "Reverb disabled.",
+					Image = "sofa",
+					Duration = 3
+				})
 			end
 		end
 	end
