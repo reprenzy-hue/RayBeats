@@ -643,7 +643,7 @@ local function playTrack(path, soundName, playlistName)
 
 					RayfieldLibrary:Notify({
 						Title = "RayBeats System",
-						Content = currentTrackName.." track cannot be played. shuffling another song.",
+						Content = currentTrackName.." cannot be played. shuffling another song.",
 						Image = "file-x",
 						Duration = 5
 					})
@@ -1024,7 +1024,7 @@ ControlsTab:CreateButton({
 			currentSound = nil
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = currentTrackName.." track has been stopped.",
+				Content = currentTrackName.." has been stopped.",
 				Image = "square",
 				Duration = 4
 			})
