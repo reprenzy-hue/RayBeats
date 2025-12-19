@@ -198,7 +198,7 @@ local loopTrack
 local midFreqSlider
 local playPause
 local reverbToggle
-local richtextDetector
+local internalEditor
 local shufflePlaylist
 local soundGroup
 local soundName
@@ -483,14 +483,25 @@ RayfieldLibrary.Notify = function(self, options)
 	return notif
 end
 
-richtextDetector = runService.Heartbeat:Connect(function()
-    for _, obj in ipairs(gethui():GetDescendants()) do
-        if obj:IsA("TextLabel") and obj.Text:find("All tracks in ") then
-            if not obj.RichText then
-                obj.RichText = true
-            end
-        end
-    end
+internalEditor = runService.Heartbeat:Connect(function()
+	for _, obj in ipairs(gethui():GetDescendants()) do
+		if obj:IsA("TextLabel") then
+			local p = obj.Parent
+			if p and p:IsA("Frame") and p.Name:find("Section") and obj.Text:find("All tracks in ") then
+				obj.RichText = true
+			end
+
+		elseif obj:IsA("ImageButton") then
+			local p = obj.Parent
+			if not (p and p:IsA("Frame") and p.Name:find("Topbar")) then continue end
+
+			if obj.Name:find("Settings") then
+				obj:Destroy()
+			elseif obj.Name:find("Search") then
+				obj.Position = UDim2.new(1, -75, 0.5, 0)
+			end
+		end
+	end
 end)
 
 local function playSFX(sfxType)
@@ -567,6 +578,9 @@ local function playTrack(path, soundName, playlistName)
 	activePlaylist = playlistName or "None"
 
 	if currentSound then
+		local stopTween = tweenService:Create(currentSound, soundTweenInfo, {Volume = 0})
+		stopTween:Play()
+		task.wait(0.2)
 		if bassBoost then
 			bassBoost.Parent = workspace
 		end
@@ -580,15 +594,15 @@ local function playTrack(path, soundName, playlistName)
 		currentSound:Destroy()
 	end
 
-	if richtextDetector then
-		richtextDetector:Disconnect()
+	if internalEditor then
+		internalEditor:Disconnect()
 	end
 
 	currentSound = Instance.new("Sound")
 	currentSound.Name = "RayBeats // " .. soundName
 	currentSound.SoundId = getcustomasset(path)
 	currentSound.Parent = soundService
-	currentSound.Volume = currentSoundVolume
+	currentSound.Volume = 0
 	currentSound.PlaybackSpeed = currentSpeed
 	currentSound.Looped = isLooped
 	currentTrackName = soundName
@@ -610,26 +624,104 @@ local function playTrack(path, soundName, playlistName)
 			if string.find(msg, targetedTrack, 1, true) then
 				isCurrentTrackError = true
 				errorCheckerConnection:Disconnect()
-				RayfieldLibrary:Notify({
-					Title = "RayBeats System",
-					Content = "Failed to load track. Please try again or convert this track to a supported format.",
-					Image = "file-x",
-					Duration = 5
-				})
 				playSFX("RayBeats_Error.ogg")
 				if currentSound then
 					currentSound:Destroy()
 					currentSound = nil
 				end
-				isStopped = true
-				activePlaylist = "None"
-				nowPlayingLabel:Set("<b>Now Playing</b> None", "square", Color3.fromRGB(42, 65, 70))
-				durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "timer-off", Color3.fromRGB(31, 48, 51))
-				playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
 				allowPlayPauseNotificationError = false
 				playPause:Set(false)
 				task.wait(0.2)
 				allowPlayPauseNotificationError = true
+
+				if shuffleEnabled and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
+					table.insert(playedTracks, path)
+
+					if #playedTracks >= #playlists[activePlaylist] then
+						playedTracks = {}
+					end
+
+					RayfieldLibrary:Notify({
+						Title = "RayBeats System",
+						Content = currentTrackName.." track cannot be played. shuffling another song.",
+						Image = "file-x",
+						Duration = 5
+					})
+
+					local availableTracks = {}
+					for i, track in ipairs(playlists[activePlaylist]) do
+						if not table.find(playedTracks, track) then
+							table.insert(availableTracks, {index = i, path = track})
+						end
+					end
+
+					if #availableTracks > 0 then
+						local randomTrack = availableTracks[math.random(1, #availableTracks)]
+						local nextFile = randomTrack.path
+						local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
+						playlistIndex[activePlaylist] = randomTrack.index
+						
+						playTrack(nextFile, nextSongName, activePlaylist)
+					else
+						local nextFile, randomIndex
+						repeat
+							randomIndex = math.random(1, #playlists[activePlaylist])
+							nextFile = playlists[activePlaylist][randomIndex]
+						until nextFile ~= path
+						local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
+						playlistIndex[activePlaylist] = randomIndex
+
+						playTrack(nextFile, nextSongName, activePlaylist)
+					end
+				elseif isPlaylistLooped and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
+					local currentIndex = playlistIndex[activePlaylist] or 1
+					local nextIndex = currentIndex + 1
+					if nextIndex > #playlists[activePlaylist] then
+						nextIndex = 1
+					end
+					RayfieldLibrary:Notify({
+						Title = "RayBeats System",
+						Content = currentTrackName.." cannot be played. continuing to the next track.",
+						Image = "file-x",
+						Duration = 5
+					})
+					local nextFile = playlists[activePlaylist][nextIndex]
+					local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
+					playlistIndex[activePlaylist] = nextIndex
+					playTrack(nextFile, nextSongName, activePlaylist)
+				else
+					RayfieldLibrary:Notify({
+						Title = "RayBeats System",
+						Content = "Failed to load track. Please try again or convert this track to a supported format.",
+						Image = "file-x",
+						Duration = 5
+					})
+					playPause:Set(false)
+					if nowPlayingLabel then
+						nowPlayingLabel:Set("<b>Now Playing</b> None", "square", Color3.fromRGB(42, 65, 70))
+					end
+					if durationLabel then
+						durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "timer-off", Color3.fromRGB(31, 48, 51))
+					end
+					if playlistLabel then
+						playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
+					end
+					isStopped = true
+					activePlaylist = "None"
+					if bassBoost then
+						bassBoost.Parent = workspace
+					end
+					if equalizerEffect then
+						equalizerEffect.Parent = workspace
+					end
+					if reverbEffect then
+						reverbEffect.Parent = workspace
+					end
+					if currentSound then
+						currentSound:Destroy()
+						currentSound = nil
+					end
+				end
 			end
 		end)
 
@@ -659,7 +751,10 @@ local function playTrack(path, soundName, playlistName)
 				playlistLabel:Set("<b>Active Playlist</b> " .. (playlistName or "None"), "list-video", Color3.fromRGB(20, 31, 33))
 			end
 			playPause:Set(true)
-
+			local starter = tweenService:Create(currentSound, soundTweenInfo, {Volume = currentSoundVolume})
+			if not currentSound.Playing then
+				currentSound.Playing = true
+			end
 			if not isStopped then
 				if currentSound.TimePosition == 0 then
 					RayfieldLibrary:Notify({
@@ -699,13 +794,15 @@ local function playTrack(path, soundName, playlistName)
 						
 						playTrack(nextFile, nextSongName, activePlaylist)
 					else
-						local randomIndex = math.random(1, #playlists[activePlaylist])
-						local nextFile = playlists[activePlaylist][randomIndex]
+					local nextFile, randomIndex
+					repeat
+						randomIndex = math.random(1, #playlists[activePlaylist])
+							nextFile = playlists[activePlaylist][randomIndex]
+							until nextFile ~= path
 						local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
 						playlistIndex[activePlaylist] = randomIndex
-						
+
 						playTrack(nextFile, nextSongName, activePlaylist)
-						
 					end
 				elseif isPlaylistLooped and activePlaylist and playlists[activePlaylist] and #playlists[activePlaylist] > 1 then
 					local currentIndex = playlistIndex[activePlaylist] or 1
@@ -724,6 +821,9 @@ local function playTrack(path, soundName, playlistName)
 					end
 					if durationLabel then
 						durationLabel:Set("<b>Duration</b> 00:00 <font transparency='0.6'>/</font> 00:00", "timer-off", Color3.fromRGB(31, 48, 51))
+					end
+					if playlistLabel then
+						playlistLabel:Set("<b>Active Playlist</b> None", "list-video", Color3.fromRGB(20, 31, 33))
 					end
 					isStopped = true
 					activePlaylist = "None"
@@ -775,17 +875,17 @@ ControlsTab:CreateButton({
 			})
 			playSFX("RayBeats_Error.ogg")
 			return
+		else
+			local currentIndex = playlistIndex[activePlaylist] or 1
+			local prevIndex = currentIndex - 1
+			if prevIndex < 1 then
+				prevIndex = #playlists[activePlaylist]
+			end
+			local prevFile = playlists[activePlaylist][prevIndex]
+			local prevSongName = getFileName(prevFile):gsub("%.[^.]+$", "")
+			playlistIndex[activePlaylist] = prevIndex
+			playTrack(prevFile, prevSongName, activePlaylist)
 		end
-
-		local currentIndex = playlistIndex[activePlaylist] or 1
-		local prevIndex = currentIndex - 1
-		if prevIndex < 1 then
-			prevIndex = #playlists[activePlaylist]
-		end
-		local prevFile = playlists[activePlaylist][prevIndex]
-		local prevSongName = getFileName(prevFile):gsub("%.[^.]+$", "")
-		playlistIndex[activePlaylist] = prevIndex
-		playTrack(prevFile, prevSongName, activePlaylist)
 	end
 })
 
@@ -809,8 +909,10 @@ playPause = ControlsTab:CreateToggle({
 				local fadeOut = tweenService:Create(currentSound, soundTweenInfo, {Volume = 0})
 				fadeOut:Play()
 				fadeOut.Completed:Connect(function()
-					currentSound.Playing = false
-					currentSound.Volume = currentSoundVolume
+					if currentSound then
+						currentSound.Playing = false
+						currentSound.Volume = currentSoundVolume
+					end
 				end)
 			end
 		else
@@ -842,17 +944,17 @@ ControlsTab:CreateButton({
 			})
 			playSFX("RayBeats_Error.ogg")
 			return
+		else
+			local currentIndex = playlistIndex[activePlaylist] or 1
+			local nextIndex = currentIndex + 1
+			if nextIndex > #playlists[activePlaylist] then
+				nextIndex = 1
+			end
+			local nextFile = playlists[activePlaylist][nextIndex]
+			local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
+			playlistIndex[activePlaylist] = nextIndex
+			playTrack(nextFile, nextSongName, activePlaylist)
 		end
-
-		local currentIndex = playlistIndex[activePlaylist] or 1
-		local nextIndex = currentIndex + 1
-		if nextIndex > #playlists[activePlaylist] then
-			nextIndex = 1
-		end
-		local nextFile = playlists[activePlaylist][nextIndex]
-		local nextSongName = getFileName(nextFile):gsub("%.[^.]+$", "")
-		playlistIndex[activePlaylist] = nextIndex
-		playTrack(nextFile, nextSongName, activePlaylist)
 	end
 })
 
@@ -922,8 +1024,8 @@ ControlsTab:CreateButton({
 			currentSound = nil
 			RayfieldLibrary:Notify({
 				Title = "RayBeats System",
-				Content = "The track has been stopped.",
-				Image = "circle-slash",
+				Content = currentTrackName.." track has been stopped.",
+				Image = "square",
 				Duration = 4
 			})
 		else
@@ -1602,24 +1704,13 @@ MiscTab:CreateSection("Information")
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>How to use RayBeats</b>",
 	Content = [[
-To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.
+	To add your custom tracks to RayBeats, start by opening your device’s file explorer. From there, navigate to the main workspace directory used by your executor — this is where all external script data is typically stored.
 
-Once you have located the workspace, look for a folder named <b>RayBeats</b>. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
+	Once you have located the workspace, look for a folder named <b>RayBeats</b>. Inside that folder, create a new subfolder dedicated to your personal playlist. You can freely name the folder based on your preference, as it will serve as the location for your track files.
 
-After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, <font face='RobotoMono'>.wav</font>, or <font face='RobotoMono'>.flac</font>. Make sure that each file is properly placed inside your playlist folder.
+	After setting up the folder, you can begin importing/inserting your audio files in supported formats such as <font face='RobotoMono'>.mp3</font>, <font face='RobotoMono'>.ogg</font>, <font face='RobotoMono'>.wav</font>, or <font face='RobotoMono'>.flac</font>. Make sure that each file is properly placed inside your playlist folder.
 
-When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
-})
-
-MiscTab:CreateParagraph({
-	Title = " <font transparency='0.6'>- //</font> <b>Changelog v"..raybeatsVersion.." "..raybeatsRelease.."</b>",
-  	Content = [[
-<font transparency='0.6'>•</font> Remove all useless variables
-<font transparency='0.6'>•</font> Fixed some bugs
-<font transparency='0.6'>•</font> Adding tweening to Rewind, Forward, Reset, and Stop
-<font transparency='0.6'>•</font> Track time positioning when enabling Play/Resume toggle removed
-
-<font transparency='0.6'>—</font> <i>Updated at <b>23 November 2025, 01:06 PM</b></i>]]
+	When everything is ready, simply click the <b>Reload RayBeats</b> button below. The system will automatically detect your newly added tracks and prepare them for playback within the player interface.]]
 })
 
 MiscTab:CreateSection("Credits")
@@ -1627,9 +1718,9 @@ MiscTab:CreateSection("Credits")
 MiscTab:CreateParagraph({
 	Title = " <font transparency='0.6'>- //</font> <b>About RayBeats</b>",
 	Content = [[
-<b>Created by <font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>Owner of FynLabs</font>
-<b>UI by <font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
-<b>Reference by <font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>]]
+Created by <b><font color='rgb(220, 215, 180)'>Fyan</font></b> <font transparency='0.6'>Owner of FynLabs</font>
+UI by <b><font color='rgb(147, 112, 219)'>Sirius</font></b> <font transparency='0.6'>including Shlex, Max, Damian, and iRay</font>
+Reference by <b><font color='rgb(255, 99, 71)'>.ravex</font></b> <font transparency='0.6'>on <font color='rgb(88, 101, 242)'>Discord</font></font>]]
 })
 
 MiscTab:CreateDivider()
@@ -1714,8 +1805,8 @@ MiscTab:CreateButton({
 		isDurationStarted = false
 		runRandomAbilityText = false
 		durationConnection:Disconnect()
-		if richtextDetector then
-			richtextDetector:Disconnect()
+		if internalEditor then
+			internalEditor:Disconnect()
 		end
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
@@ -1744,8 +1835,8 @@ MiscTab:CreateButton({
 		isDurationStarted = false
 		runRandomAbilityText = false
 		durationConnection:Disconnect()
-		if richtextDetector then
-			richtextDetector:Disconnect()
+		if internalEditor then
+			internalEditor:Disconnect()
 		end
 		if RayfieldLibrary then
 			RayfieldLibrary:Destroy()
@@ -1882,8 +1973,8 @@ if game.Players.LocalPlayer.UserId == 5349151666 and game.Players.LocalPlayer.Na
 			isDurationStarted = false
 			runRandomAbilityText = false
 			durationConnection:Disconnect()
-			if richtextDetector then
-				richtextDetector:Disconnect()
+			if internalEditor then
+				internalEditor:Disconnect()
 			end
 			if RayfieldLibrary then
 				RayfieldLibrary:Destroy()
